@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://www.speed-plumbing.co.kr/sitemap.xml

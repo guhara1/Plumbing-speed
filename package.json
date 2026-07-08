@@ -1,0 +1,12 @@
+{
+  "name": "speed-plumbing-site",
+  "version": "1.0.0",
+  "description": "전국 배관공사·하수구막힘 정적 웹사이트 (데이터 기반 생성기)",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "serve": "node scripts/serve.js",
+    "start": "node build.js && node scripts/serve.js"
+  },
+  "license": "UNLICENSED"
+}
