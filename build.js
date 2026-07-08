@@ -12,6 +12,8 @@ const { symptoms } = require("./data/symptoms");
 const { places } = require("./data/places");
 const { regions } = require("./data/regions");
 const { serviceDepth, symptomDepth, placeDepth } = require("./data/depth");
+const { seoulDongs } = require("./data/seoul-dongs");
+const { introVariants, sectionThemes, faqExtraVariants } = require("./data/seoul-dong-content");
 
 const OUT = path.join(__dirname, "dist");
 const pages = []; // {path, title, desc, noindex, changefreq, priority}
@@ -657,10 +659,17 @@ function buildDistrict(r, d) {
   const nearbyChips = nearby.length
     ? `<section class="section related"><h2>${esc(r.name)} 주변 지역</h2>${chips(nearby.map((x) => ({ href: regions.base + r.slug + "/" + x.slug + "/", label: x.name })))}</section>`
     : "";
+  // 행정동 목록(서울 등 dongs 가 연결된 구에서만). 각 동은 고유 콘텐츠 페이지로 이동.
+  const dongList = d.dongs && d.dongs.length
+    ? `<section class="section"><h2>${esc(d.name)} 동네별 안내</h2>
+<p class="prose">${esc(d.name)} 내 동네를 선택하면 해당 지역 배관공사·하수구막힘 안내로 이동합니다. (OO1동·2동 등은 대표 동으로 통합했습니다.)</p>
+${chips(d.dongs.map(([name, slug]) => ({ href: p + slug + "/", label: name })))}</section>`
+    : "";
   const body = `
 ${bc.html}
 <h1>${esc(scope)} 배관공사·하수구막힘 안내</h1>
 <div class="lead-block prose"><p>${esc(d.note)} ${esc(scope)}에서 배관공사·하수구막힘이 필요할 때는 막힌 위치와 증상, 건물 유형을 먼저 확인한 뒤 뚫음·세척·교체·내시경 여부를 정합니다.</p></div>
+${dongList}
 ${areaServiceSections(scope)}
 ${ctaBand(esc(scope) + " 배관공사·하수구막힘 상담")}
 ${faq.html}
@@ -670,6 +679,74 @@ ${nearbyChips}
   const title = `${scope} 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 출장`;
   const desc = `${scope} 배관공사·하수구막힘 출장 안내입니다. ${d.note} 싱크대·변기·욕실 배수구 막힘, 배관수리·교체, 고압세척, 배관내시경 기준을 확인하세요.`;
   layout({ path: p, title, description: desc.slice(0, 155), body, schemas: [bc.schema, faq.schema], changefreq: "monthly", priority: 0.55 });
+}
+
+// 결정적 해시(같은 슬러그 → 항상 같은 결과, 빌드 재현성 보장)
+function hashStr(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = (h * 16777619) >>> 0;
+  }
+  return h;
+}
+function fill(str, dong, gu) {
+  return str.replace(/\{D\}/g, dong).replace(/\{G\}/g, gu);
+}
+
+// 서울 행정동 페이지: 변형 콘텐츠를 해시로 조합해 고유 본문 생성
+function buildSeoulDong(r, d, dong) {
+  const [dName, dSlug] = dong;
+  const guBase = regions.base + r.slug + "/" + d.slug + "/";
+  const p = guBase + dSlug + "/";
+  const scope = r.name + " " + d.name + " " + dName;
+  const seed = hashStr(r.slug + "|" + d.slug + "|" + dSlug);
+  const bc = breadcrumb([
+    { label: "홈", href: "/" },
+    { label: "전국 지역", href: regions.base },
+    { label: r.name, href: regions.base + r.slug + "/" },
+    { label: d.name, href: guBase },
+    { label: dName },
+  ]);
+
+  const intro = fill(introVariants[seed % introVariants.length], dName, d.name);
+  // 5개 테마에서 각기 다른 변형을 뽑고, 섹션 순서도 해시로 회전
+  const rot = seed % sectionThemes.length;
+  const secBlocks = sectionThemes.map((theme, t) => {
+    const v = theme[(seed + t * 13 + 7) % theme.length];
+    return { h2: fill(v.h2, dName, d.name), body: fill(v.body, dName, d.name) };
+  });
+  const ordered = secBlocks.slice(rot).concat(secBlocks.slice(0, rot));
+  const sectionsHtml = ordered
+    .map((s) => `<section class="section"><h2>${esc(s.h2)}</h2><div class="prose"><p>${esc(s.body)}</p></div></section>`)
+    .join("");
+
+  // FAQ: 지역 공통 3개 + 동별 변형 1개
+  const extra = faqExtraVariants[seed % faqExtraVariants.length];
+  const faq = faqBlock(areaFaq(scope).concat([{ q: fill(extra.q, dName, d.name), a: fill(extra.a, dName, d.name) }]));
+
+  // 같은 구의 다른 동네(주변) 링크
+  const others = d.dongs.filter(([, s]) => s !== dSlug);
+  const start = seed % Math.max(1, others.length);
+  const nearby = others.slice(start).concat(others.slice(0, start)).slice(0, 8);
+  const nearbyChips = nearby.length
+    ? `<section class="section related"><h2>${esc(d.name)} 주변 동네</h2>${chips(nearby.map(([name, s]) => ({ href: guBase + s + "/", label: name })))}</section>`
+    : "";
+
+  const body = `
+${bc.html}
+<h1>${esc(scope)} 배관공사·하수구막힘 안내</h1>
+<div class="lead-block prose"><p>${esc(intro)}</p></div>
+${sectionsHtml}
+${ctaBand(esc(scope) + " 배관공사·하수구막힘 상담")}
+${faq.html}
+${nearbyChips}
+<section class="section related"><h2>${esc(d.name)} 전체 · 주요 서비스</h2>${chips([{ href: guBase, label: d.name + " 전체" }, { href: "/pipe-work/", label: "배관공사" }, { href: "/drain-clog/", label: "하수구막힘" }, { href: "/cost/", label: "비용 안내" }])}</section>
+`;
+  const title = `${scope} 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 출장`;
+  const desc = `${scope} 배관공사·하수구막힘 출장 안내. 싱크대·변기·욕실 배수구 막힘, 배관수리·교체, 누수, 고압세척, 배관내시경 점검 기준을 확인하세요.`;
+  // 지역 페이지엔 LocalBusiness 미포함(가짜 지점 방지). WebPage + Breadcrumb + FAQ 만.
+  layout({ path: p, title, description: desc.slice(0, 155), body, schemas: [bc.schema, faq.schema], changefreq: "monthly", priority: 0.5 });
 }
 
 /* ---- Static pages ---- */
@@ -944,8 +1021,17 @@ function run() {
 
   buildAreaHub();
   regions.provinces.forEach((r) => {
+    // 서울 자치구에 행정동 목록 연결 (data/seoul-dongs.js)
+    if (r.slug === "seoul") {
+      r.districts.forEach((d) => {
+        d.dongs = seoulDongs[d.slug] || [];
+      });
+    }
     buildProvince(r);
-    r.districts.forEach((d) => buildDistrict(r, d));
+    r.districts.forEach((d) => {
+      buildDistrict(r, d);
+      if (d.dongs && d.dongs.length) d.dongs.forEach((dong) => buildSeoulDong(r, d, dong));
+    });
   });
 
   buildStaticPages();
