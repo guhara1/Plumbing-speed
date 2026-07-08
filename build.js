@@ -13,6 +13,7 @@ const { places } = require("./data/places");
 const { regions } = require("./data/regions");
 const { serviceDepth, symptomDepth, placeDepth } = require("./data/depth");
 const { seoulDongs } = require("./data/seoul-dongs");
+const { gyeonggiDistricts } = require("./data/gyeonggi");
 const { introVariants, sectionThemes, faqExtraVariants } = require("./data/seoul-dong-content");
 
 const OUT = path.join(__dirname, "dist");
@@ -645,42 +646,6 @@ ${faq.html}
   layout({ path: p, title: r.title, description: r.description, body, schemas: [bc.schema, faq.schema], changefreq: "monthly", priority: 0.6 });
 }
 
-function buildDistrict(r, d) {
-  const p = regions.base + r.slug + "/" + d.slug + "/";
-  const bc = breadcrumb([
-    { label: "홈", href: "/" },
-    { label: "전국 지역", href: regions.base },
-    { label: r.name, href: regions.base + r.slug + "/" },
-    { label: d.name },
-  ]);
-  const scope = r.name + " " + d.name;
-  const faq = faqBlock(areaFaq(scope));
-  const nearby = r.districts.filter((x) => x.slug !== d.slug).slice(0, 6);
-  const nearbyChips = nearby.length
-    ? `<section class="section related"><h2>${esc(r.name)} 주변 지역</h2>${chips(nearby.map((x) => ({ href: regions.base + r.slug + "/" + x.slug + "/", label: x.name })))}</section>`
-    : "";
-  // 행정동 목록(서울 등 dongs 가 연결된 구에서만). 각 동은 고유 콘텐츠 페이지로 이동.
-  const dongList = d.dongs && d.dongs.length
-    ? `<section class="section"><h2>${esc(d.name)} 동네별 안내</h2>
-<p class="prose">${esc(d.name)} 내 동네를 선택하면 해당 지역 배관공사·하수구막힘 안내로 이동합니다. (OO1동·2동 등은 대표 동으로 통합했습니다.)</p>
-${chips(d.dongs.map(([name, slug]) => ({ href: p + slug + "/", label: name })))}</section>`
-    : "";
-  const body = `
-${bc.html}
-<h1>${esc(scope)} 배관공사·하수구막힘 안내</h1>
-<div class="lead-block prose"><p>${esc(d.note)} ${esc(scope)}에서 배관공사·하수구막힘이 필요할 때는 막힌 위치와 증상, 건물 유형을 먼저 확인한 뒤 뚫음·세척·교체·내시경 여부를 정합니다.</p></div>
-${dongList}
-${areaServiceSections(scope)}
-${ctaBand(esc(scope) + " 배관공사·하수구막힘 상담")}
-${faq.html}
-${nearbyChips}
-<section class="section related"><h2>주요 서비스 바로가기</h2>${chips([{ href: "/pipe-work/", label: "배관공사" }, { href: "/drain-clog/", label: "하수구막힘" }, { href: "/cost/", label: "비용 안내" }, { href: "/process/", label: "작업 과정" }])}</section>
-`;
-  const title = `${scope} 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 출장`;
-  const desc = `${scope} 배관공사·하수구막힘 출장 안내입니다. ${d.note} 싱크대·변기·욕실 배수구 막힘, 배관수리·교체, 고압세척, 배관내시경 기준을 확인하세요.`;
-  layout({ path: p, title, description: desc.slice(0, 155), body, schemas: [bc.schema, faq.schema], changefreq: "monthly", priority: 0.55 });
-}
-
 // 결정적 해시(같은 슬러그 → 항상 같은 결과, 빌드 재현성 보장)
 function hashStr(s) {
   let h = 2166136261;
@@ -693,44 +658,111 @@ function hashStr(s) {
 function fill(str, dong, gu) {
   return str.replace(/\{D\}/g, dong).replace(/\{G\}/g, gu);
 }
-
-// 서울 행정동 페이지: 변형 콘텐츠를 해시로 조합해 고유 본문 생성
-function buildSeoulDong(r, d, dong) {
-  const [dName, dSlug] = dong;
-  const guBase = regions.base + r.slug + "/" + d.slug + "/";
-  const p = guBase + dSlug + "/";
-  const scope = r.name + " " + d.name + " " + dName;
-  const seed = hashStr(r.slug + "|" + d.slug + "|" + dSlug);
-  const bc = breadcrumb([
+function areaCrumbs(r, ancestors) {
+  const items = [
     { label: "홈", href: "/" },
     { label: "전국 지역", href: regions.base },
     { label: r.name, href: regions.base + r.slug + "/" },
-    { label: d.name, href: guBase },
-    { label: dName },
-  ]);
+  ];
+  let acc = regions.base + r.slug + "/";
+  for (const c of ancestors) {
+    acc += c.slug + "/";
+    items.push({ label: c.name, href: acc });
+  }
+  return items;
+}
 
-  const intro = fill(introVariants[seed % introVariants.length], dName, d.name);
-  // 5개 테마에서 각기 다른 변형을 뽑고, 섹션 순서도 해시로 회전
+// 지역 상위 노드(시/군/구) 페이지: 하위 목록(구 또는 동)을 렌더하고 하위를 재귀 생성.
+// ancestors: province 아래 ~ 이 노드 바로 위까지의 [{name,slug}] (이 노드 제외)
+// siblings: 같은 레벨 형제 노드 배열(주변 지역 링크용)
+function buildAreaNode(r, ancestors, node, siblings) {
+  const chain = ancestors.concat([{ name: node.name, slug: node.slug }]);
+  const base = regions.base + r.slug + "/" + chain.map((c) => c.slug).join("/") + "/";
+  const scope = r.name + " " + chain.map((c) => c.name).join(" ");
+  const crumbItems = areaCrumbs(r, ancestors).concat([{ label: node.name }]);
+  const bc = breadcrumb(crumbItems);
+  const faq = faqBlock(areaFaq(scope));
+
+  // 하위(구 또는 동) 목록 섹션
+  let childSection = "";
+  if (node.subDistricts && node.subDistricts.length) {
+    childSection = `<section class="section"><h2>${esc(node.name)} 행정구 안내</h2>
+<p class="prose">${esc(node.name)}의 행정구를 선택하면 해당 구의 동네별 안내로 이동합니다.</p>
+${chips(node.subDistricts.map((sd) => ({ href: base + sd.slug + "/", label: sd.name })))}</section>`;
+  } else if (node.dongs && node.dongs.length) {
+    childSection = `<section class="section"><h2>${esc(node.name)} 동네별 안내</h2>
+<p class="prose">${esc(node.name)} 내 동네를 선택하면 해당 지역 배관공사·하수구막힘 안내로 이동합니다. (OO1동·2동 등은 대표 동으로 통합했습니다.)</p>
+${chips(node.dongs.map(([name, slug]) => ({ href: base + slug + "/", label: name })))}</section>`;
+  }
+
+  // 형제(주변 지역) 링크
+  const sibBase = regions.base + r.slug + "/" + (ancestors.length ? ancestors.map((c) => c.slug).join("/") + "/" : "");
+  const nearby = (siblings || []).filter((x) => x.slug !== node.slug).slice(0, 8);
+  const nearLabel = ancestors.length ? esc(ancestors[ancestors.length - 1].name) + " 주변" : esc(r.name) + " 주변 지역";
+  const nearbyChips = nearby.length
+    ? `<section class="section related"><h2>${nearLabel}</h2>${chips(nearby.map((x) => ({ href: sibBase + x.slug + "/", label: x.name })))}</section>`
+    : "";
+
+  const parentLinks = ancestors.length
+    ? chips(ancestors.map((c, i) => ({ href: regions.base + r.slug + "/" + ancestors.slice(0, i + 1).map((a) => a.slug).join("/") + "/", label: c.name + " 전체" })))
+    : "";
+
+  const body = `
+${bc.html}
+<h1>${esc(scope)} 배관공사·하수구막힘 안내</h1>
+<div class="lead-block prose"><p>${esc(node.note || "")} ${esc(scope)}에서 배관공사·하수구막힘이 필요할 때는 막힌 위치와 증상, 건물 유형을 먼저 확인한 뒤 뚫음·세척·교체·내시경 여부를 정합니다.</p></div>
+${childSection}
+${areaServiceSections(scope)}
+${ctaBand(esc(scope) + " 배관공사·하수구막힘 상담")}
+${faq.html}
+${nearbyChips}
+${parentLinks ? `<section class="section related"><h2>상위 지역</h2>${parentLinks}</section>` : ""}
+<section class="section related"><h2>주요 서비스 바로가기</h2>${chips([{ href: "/pipe-work/", label: "배관공사" }, { href: "/drain-clog/", label: "하수구막힘" }, { href: "/cost/", label: "비용 안내" }, { href: "/process/", label: "작업 과정" }])}</section>
+`;
+  const title = `${scope} 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 출장`;
+  const desc = `${scope} 배관공사·하수구막힘 출장 안내입니다. 싱크대·변기·욕실 배수구 막힘, 배관수리·교체, 고압세척, 배관내시경 기준을 확인하세요.`;
+  const priority = ancestors.length ? 0.5 : 0.55;
+  layout({ path: base, title, description: desc.slice(0, 155), body, schemas: [bc.schema, faq.schema], changefreq: "monthly", priority });
+
+  // 하위 재귀 생성
+  if (node.subDistricts && node.subDistricts.length) {
+    node.subDistricts.forEach((sd) => buildAreaNode(r, chain, sd, node.subDistricts));
+  } else if (node.dongs && node.dongs.length) {
+    node.dongs.forEach((dong) => buildDong(r, ancestors, node, dong));
+  }
+}
+
+// 지역 리프(동) 페이지 - 임의 상위 체인 지원 (서울: 구>동, 경기: 시>구>동 또는 시>동).
+// ancestors: node(=parent) 위 상위 체인, parent: 직속 부모 노드(dongs 보유)
+function buildDong(r, ancestors, parent, dong) {
+  const [dName, dSlug] = dong;
+  const chain = ancestors.concat([{ name: parent.name, slug: parent.slug }]);
+  const parentBase = regions.base + r.slug + "/" + chain.map((c) => c.slug).join("/") + "/";
+  const p = parentBase + dSlug + "/";
+  const scope = r.name + " " + chain.map((c) => c.name).join(" ") + " " + dName;
+  const g = parent.name; // {G} 토큰 = 직속 상위(구 또는 시)
+  const seed = hashStr(r.slug + "|" + chain.map((c) => c.slug).join("|") + "|" + dSlug);
+  const bc = breadcrumb(areaCrumbs(r, chain).concat([{ label: dName }]));
+
+  const intro = fill(introVariants[seed % introVariants.length], dName, g);
   const rot = seed % sectionThemes.length;
   const secBlocks = sectionThemes.map((theme, t) => {
     const v = theme[(seed + t * 13 + 7) % theme.length];
-    return { h2: fill(v.h2, dName, d.name), body: fill(v.body, dName, d.name) };
+    return { h2: fill(v.h2, dName, g), body: fill(v.body, dName, g) };
   });
   const ordered = secBlocks.slice(rot).concat(secBlocks.slice(0, rot));
   const sectionsHtml = ordered
     .map((s) => `<section class="section"><h2>${esc(s.h2)}</h2><div class="prose"><p>${esc(s.body)}</p></div></section>`)
     .join("");
 
-  // FAQ: 지역 공통 3개 + 동별 변형 1개
   const extra = faqExtraVariants[seed % faqExtraVariants.length];
-  const faq = faqBlock(areaFaq(scope).concat([{ q: fill(extra.q, dName, d.name), a: fill(extra.a, dName, d.name) }]));
+  const faq = faqBlock(areaFaq(scope).concat([{ q: fill(extra.q, dName, g), a: fill(extra.a, dName, g) }]));
 
-  // 같은 구의 다른 동네(주변) 링크
-  const others = d.dongs.filter(([, s]) => s !== dSlug);
+  const others = parent.dongs.filter(([, s]) => s !== dSlug);
   const start = seed % Math.max(1, others.length);
   const nearby = others.slice(start).concat(others.slice(0, start)).slice(0, 8);
   const nearbyChips = nearby.length
-    ? `<section class="section related"><h2>${esc(d.name)} 주변 동네</h2>${chips(nearby.map(([name, s]) => ({ href: guBase + s + "/", label: name })))}</section>`
+    ? `<section class="section related"><h2>${esc(parent.name)} 주변 동네</h2>${chips(nearby.map(([name, s]) => ({ href: parentBase + s + "/", label: name })))}</section>`
     : "";
 
   const body = `
@@ -741,7 +773,7 @@ ${sectionsHtml}
 ${ctaBand(esc(scope) + " 배관공사·하수구막힘 상담")}
 ${faq.html}
 ${nearbyChips}
-<section class="section related"><h2>${esc(d.name)} 전체 · 주요 서비스</h2>${chips([{ href: guBase, label: d.name + " 전체" }, { href: "/pipe-work/", label: "배관공사" }, { href: "/drain-clog/", label: "하수구막힘" }, { href: "/cost/", label: "비용 안내" }])}</section>
+<section class="section related"><h2>${esc(parent.name)} 전체 · 주요 서비스</h2>${chips([{ href: parentBase, label: parent.name + " 전체" }, { href: "/pipe-work/", label: "배관공사" }, { href: "/drain-clog/", label: "하수구막힘" }, { href: "/cost/", label: "비용 안내" }])}</section>
 `;
   const title = `${scope} 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 출장`;
   const desc = `${scope} 배관공사·하수구막힘 출장 안내. 싱크대·변기·욕실 배수구 막힘, 배관수리·교체, 누수, 고압세척, 배관내시경 점검 기준을 확인하세요.`;
@@ -1027,11 +1059,12 @@ function run() {
         d.dongs = seoulDongs[d.slug] || [];
       });
     }
+    // 경기도 시·군 → (행정구) → 행정동 구조 연결 (data/gyeonggi.js)
+    if (r.slug === "gyeonggi") {
+      r.districts = gyeonggiDistricts;
+    }
     buildProvince(r);
-    r.districts.forEach((d) => {
-      buildDistrict(r, d);
-      if (d.dongs && d.dongs.length) d.dongs.forEach((dong) => buildSeoulDong(r, d, dong));
-    });
+    r.districts.forEach((d) => buildAreaNode(r, [], d, r.districts));
   });
 
   buildStaticPages();
