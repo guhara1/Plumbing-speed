@@ -22,6 +22,46 @@ const dongExtra = {
   // 종로구: 명륜동 보강
   "seoul/jongno-gu": [["명륜동","myeongnyun-dong"]],
 
+  // ===== 광역시 전 행정동 완성 (대표 목록 누락분 보강, 번호 동은 대표 1개) =====
+  // --- 부산 ---
+  "busan/busanjin-gu": [["연지동","yeonji-dong"],["초읍동","choeup-dong"],["범전동","beomjeon-dong"]],
+  "busan/dongnae-gu": [["낙민동","nangmin-dong"]],
+  "busan/geumjeong-gu": [["선두구동","seondugu-dong"],["금성동","geumseong-dong"]],
+  "busan/gangseo-gu": [["강동동","gangdong-dong"],["신호동","sinho-dong"]],
+  // --- 대구 ---
+  "daegu/dong-gu": [["도평동","dopyeong-dong"],["공산동","gongsan-dong"],["해안동","haean-dong"],["각산동","gaksan-dong"]],
+  "daegu/seo-gu": [["상중이동","sangjungi-dong"]],
+  "daegu/buk-gu": [["고성동","goseong-dong"],["검단동","geomdan-dong"],["무태조야동","mutaejoya-dong"],["관문동","gwanmun-dong"],["읍내동","eumnae-dong"],["국우동","gugu-dong"]],
+  "daegu/suseong-gu": [["중동","jung-dong"],["상동","sang-dong"]],
+  "daegu/dalseo-gu": [["용산동","yongsan-dong"],["신당동","sindang-dong"],["본동","bon-dong"],["유천동","yucheon-dong"],["도원동","dowon-dong"],["송현동","songhyeon-dong"]],
+  "daegu/dalseong-gun": [["구지면","guji-myeon"]],
+  "daegu/gunwi-gun": [["의흥면","uiheung-myeon"],["산성면","sanseong-myeon"],["삼국유사면","samgukyusa-myeon"]],
+  // --- 인천 ---
+  "incheon/jung-gu": [["도원동","dowon-dong"],["율목동","yulmok-dong"],["동인천동","dongincheon-dong"],["개항동","gaehang-dong"]],
+  "incheon/dong-gu": [["창영동","changyeong-dong"],["송림동","songnim-dong"]],
+  "incheon/namdong-gu": [["고잔동","gojan-dong"]],
+  "incheon/gyeyang-gu": [["동양동","dongyang-dong"]],
+  "incheon/seo-gu": [["왕길동","wanggil-dong"],["신현동","sinhyeon-dong"],["원창동","wonchang-dong"]],
+  "incheon/ganghwa-gun": [["불은면","bureun-myeon"],["하점면","hajeom-myeon"],["교동면","gyodong-myeon"],["삼산면","samsan-myeon"],["내가면","naega-myeon"]],
+  "incheon/ongjin-gun": [["북도면","bukdo-myeon"],["자월면","jawol-myeon"]],
+  // --- 대전 ---
+  "daejeon/dong-gu": [["중앙동","jungang-dong"],["신인동","sinin-dong"],["효동","hyo-dong"],["용전동","yongjeon-dong"],["산내동","sannae-dong"],["가오동","gao-dong"]],
+  "daejeon/jung-gu": [["목동","mok-dong"],["중촌동","jungchon-dong"],["문창동","munchang-dong"],["석교동","seokgyo-dong"],["대사동","daesa-dong"],["부사동","busa-dong"],["용두동","yongdu-dong"]],
+  "daejeon/seo-gu": [["복수동","boksu-dong"],["변동","byeon-dong"],["용문동","yongmun-dong"],["가장동","gajang-dong"],["내동","nae-dong"],["도안동","doan-dong"],["기성동","giseong-dong"]],
+  "daejeon/yuseong-gu": [["학하동","hakha-dong"],["온천동","oncheon-dong"],["구즉동","gujeuk-dong"]],
+  "daejeon/daedeok-gu": [["대화동","daehwa-dong"],["목상동","moksang-dong"]],
+  // --- 광주 ---
+  "gwangju/dong-gu": [["서남동","seonam-dong"],["소태동","sotae-dong"],["용연동","yongyeon-dong"]],
+  "gwangju/seo-gu": [["유덕동","yudeok-dong"],["동천동","dongcheon-dong"]],
+  "gwangju/nam-gu": [["사직동","sajik-dong"],["송암동","songam-dong"],["대촌동","daechon-dong"]],
+  "gwangju/buk-gu": [["중앙동","jungang-dong"],["임동","im-dong"],["동림동","dongnim-dong"],["우산동","usan-dong"],["풍향동","punghyang-dong"],["문화동","munhwa-dong"],["각화동","gakhwa-dong"],["양산동","yangsan-dong"],["신용동","sinyong-dong"],["건국동","geonguk-dong"],["석곡동","seokgok-dong"]],
+  "gwangju/gwangsan-gu": [["신흥동","sinheung-dong"],["어등동","eodeung-dong"],["신창동","sinchang-dong"],["임곡동","imgok-dong"],["동곡동","donggok-dong"],["평동","pyeong-dong"],["삼도동","samdo-dong"],["본량동","bollyang-dong"],["어룡동","eoryong-dong"]],
+  // --- 울산 ---
+  "ulsan/jung-gu": [["성남동","seongnam-dong"],["옥교동","okgyo-dong"],["약사동","yaksa-dong"]],
+  "ulsan/nam-gu": [["삼호동","samho-dong"],["수암동","suam-dong"]],
+  "ulsan/buk-gu": [["신현동","sinhyeon-dong"]],
+  "ulsan/ulju-gun": [["두서면","duseo-myeon"],["삼동면","samdong-myeon"]],
+
   // 화성시 (면 지역 보강)
   "gyeonggi/hwaseong-si": [["화산동","hwasan-dong"],["매송면","maesong-myeon"],["비봉면","bibong-myeon"],["마도면","mado-myeon"],["송산면","songsan-myeon"],["서신면","seosin-myeon"],["팔탄면","paltan-myeon"],["장안면","jangan-myeon"],["양감면","yanggam-myeon"]],
   // 평택시 (읍·면·동 보강)
