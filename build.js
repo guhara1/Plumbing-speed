@@ -18,6 +18,7 @@ const { metros } = require("./data/metros");
 const { provincesDo } = require("./data/provinces-do");
 const { gunDongs } = require("./data/gun-dongs");
 const { dongExtra } = require("./data/dong-extra");
+const { sejongDistricts } = require("./data/sejong");
 const { composeDong } = require("./data/dong-compose");
 
 const OUT = path.join(__dirname, "dist");
@@ -1059,6 +1060,10 @@ function run() {
     // 광역시 자치구 → 행정동 구조 연결 (data/metros.js)
     if (metros[r.slug]) {
       r.districts = metros[r.slug];
+    }
+    // 세종특별자치시: 시·군·구 없이 읍·면·동 직접 연결 (data/sejong.js)
+    if (r.slug === "sejong") {
+      r.districts = sejongDistricts;
     }
     // 도(道) 시·군 → (행정구) → 읍·면·동 구조 연결 (data/provinces-do.js)
     if (provincesDo[r.slug]) {
