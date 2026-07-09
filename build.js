@@ -15,6 +15,7 @@ const { serviceDepth, symptomDepth, placeDepth } = require("./data/depth");
 const { seoulDongs } = require("./data/seoul-dongs");
 const { gyeonggiDistricts } = require("./data/gyeonggi");
 const { metros } = require("./data/metros");
+const { provincesDo } = require("./data/provinces-do");
 const { composeDong } = require("./data/dong-compose");
 
 const OUT = path.join(__dirname, "dist");
@@ -1056,6 +1057,10 @@ function run() {
     // 광역시 자치구 → 행정동 구조 연결 (data/metros.js)
     if (metros[r.slug]) {
       r.districts = metros[r.slug];
+    }
+    // 도(道) 시·군 → (행정구) → 읍·면·동 구조 연결 (data/provinces-do.js)
+    if (provincesDo[r.slug]) {
+      r.districts = provincesDo[r.slug];
     }
     buildProvince(r);
     r.districts.forEach((d) => buildAreaNode(r, [], d, r.districts));
