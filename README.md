@@ -44,7 +44,7 @@ dist/            # 생성 결과물 (배포 대상)
 | 시·군·구 | 76+ | `/area/<시도>/<시군구>/` |
 | 서울 행정동(동네) | 219 | `/area/seoul/<자치구>/<동>/` |
 | 경기 시→(구)→동 | 350+ | `/area/gyeonggi/<시>/[<구>/]<동>/` |
-| 부산·인천 구→동 | 180+ | `/area/<busan\|incheon>/<구>/<동>/` |
+| 6개 광역시 구→동 | 470+ | `/area/<busan\|incheon\|daegu\|daejeon\|gwangju\|ulsan>/<구>/<동>/` |
 | 안내 페이지 | 7 | `/process/`, `/cost/`, `/photo-consult/`, `/emergency/`, `/cases/`, `/contact/`, `/privacy/` |
 | 사이트맵(사람용) | 1 | `/sitemap-page/` |
 
