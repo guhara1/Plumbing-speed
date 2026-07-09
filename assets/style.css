@@ -137,6 +137,13 @@ a.chip:hover{background:var(--blue);color:#fff;border-color:var(--blue);text-dec
 .mobile-bar .ic{font-size:1.15rem}
 .mobile-bar .primary{background:var(--orange);color:#fff}
 
+/* ===== 후기 ===== */
+.review-agg{font-size:.9rem;font-weight:700;color:var(--orange);background:#fff4ec;padding:3px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
+.review-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+.review-stars{color:#ffb300;letter-spacing:2px;margin-bottom:6px}
+.review-card p{color:#28323c;margin:.2em 0 .6em}
+.review-meta{font-size:.82rem;color:var(--muted);font-weight:700}
+
 /* ===== 광고 문의 팝업 ===== */
 .ad-popup{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(11,61,99,.55);padding:20px}
 .ad-popup.show{display:flex;animation:apfade .25s ease}

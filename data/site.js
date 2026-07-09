@@ -19,9 +19,12 @@ const site = {
     country: "KR",
     hours: "Mo-Su 00:00-24:00",
   },
-  baseUrl: "https://www.speed-plumbing.co.kr",
+  baseUrl: "https://plumbing-speed.netlify.app",
   locale: "ko_KR",
   year: 2026,
+  // 검색엔진 사이트 인증 (Search Console / 네이버 서치어드바이저)
+  naverVerification: "7946584b188c6c245079f4439c81719490b442af",
+  googleVerification: "", // 구글 서치콘솔 인증 코드가 있으면 여기에 입력
 };
 
 // 상단 메뉴 (드롭다운 포함)
