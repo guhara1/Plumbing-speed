@@ -4,6 +4,24 @@
 // 여기에 항목을 추가하면 즉시 더 촘촘해집니다. (실제 콘텐츠 보강 전 색인 확장용)
 
 const dongExtra = {
+  // ===== 서울 전 행정동 완성 (대표 목록에 누락된 행정동 보강, 번호 동은 대표 1개) =====
+  // 관악구: 행정동 명칭이 봉천·신림과 달라 다수 누락 → 실제 행정동 보강
+  "seoul/gwanak-gu": [["보라매동","boramae-dong"],["은천동","euncheon-dong"],["성현동","seonghyeon-dong"],["중앙동","jungang-dong"],["청림동","cheongnim-dong"],["행운동","haengun-dong"],["청룡동","cheongnyong-dong"],["낙성대동","nakseongdae-dong"],["인헌동","inheon-dong"],["서원동","seowon-dong"],["신원동","sinwon-dong"],["서림동","seorim-dong"],["신사동","sinsa-dong"],["난향동","nanhyang-dong"],["조원동","jowon-dong"],["대학동","daehak-dong"],["삼성동","samseong-dong"],["미성동","miseong-dong"],["난곡동","nangok-dong"]],
+  // 강북구: 삼양·송중·송천·삼각산·인수동 보강
+  "seoul/gangbuk-gu": [["삼양동","samyang-dong"],["송중동","songjung-dong"],["송천동","songcheon-dong"],["삼각산동","samgaksan-dong"],["인수동","insu-dong"]],
+  // 송파구: 위례동 보강
+  "seoul/songpa-gu": [["위례동","wirye-dong"]],
+  // 강서구: 우장산동 보강
+  "seoul/gangseo-gu": [["우장산동","usangsan-dong"]],
+  // 동대문구: 용신동 보강
+  "seoul/dongdaemun-gu": [["용신동","yongsin-dong"]],
+  // 서대문구: 충현동 보강
+  "seoul/seodaemun-gu": [["충현동","chunghyeon-dong"]],
+  // 중구: 동화동(누락 시) 보강
+  "seoul/jung-gu": [["동화동","donghwa-dong"]],
+  // 종로구: 명륜동 보강
+  "seoul/jongno-gu": [["명륜동","myeongnyun-dong"]],
+
   // 화성시 (면 지역 보강)
   "gyeonggi/hwaseong-si": [["화산동","hwasan-dong"],["매송면","maesong-myeon"],["비봉면","bibong-myeon"],["마도면","mado-myeon"],["송산면","songsan-myeon"],["서신면","seosin-myeon"],["팔탄면","paltan-myeon"],["장안면","jangan-myeon"],["양감면","yanggam-myeon"]],
   // 평택시 (읍·면·동 보강)
