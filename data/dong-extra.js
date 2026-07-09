@@ -62,6 +62,17 @@ const dongExtra = {
   "ulsan/buk-gu": [["신현동","sinhyeon-dong"]],
   "ulsan/ulju-gun": [["두서면","duseo-myeon"],["삼동면","samdong-myeon"]],
 
+  // ===== 도(道) 주요 시 행정동 보강 =====
+  "gangwon/wonju-si": [["일산동","ilsan-dong"],["학성동","hakseong-dong"],["우산동","usan-dong"],["개운동","gaeun-dong"],["원인동","wonin-dong"],["중앙동","jungang-dong"]],
+  "gangwon/gangneung-si": [["옥천동","okcheon-dong"],["중앙동","jungang-dong"],["성덕동","seongdeok-dong"],["송정동","songjeong-dong"],["사천면","sacheon-myeon"],["연곡면","yeongok-myeon"]],
+  "jeonnam/yeosu-si": [["여천동","yeocheon-dong"],["쌍봉동","ssangbong-dong"],["시전동","sijeon-dong"],["돌산읍","dolsan-eup"],["율촌면","yulchon-myeon"],["화양면","hwayang-myeon"]],
+  "jeonnam/suncheon-si": [["승주읍","seungju-eup"],["낙안면","nagan-myeon"],["별량면","byeollyang-myeon"],["서면","seo-myeon"],["도사동","dosa-dong"],["중앙동","jungang-dong"],["저전동","jeojeon-dong"]],
+  "gyeongbuk/gyeongju-si": [["중부동","jungbu-dong"],["황남동","hwangnam-dong"],["월성동","wolseong-dong"],["불국동","bulguk-dong"],["보덕동","bodeok-dong"],["안강읍","angang-eup"],["건천읍","geoncheon-eup"],["감포읍","gampo-eup"],["내남면","naenam-myeon"]],
+  "gyeongbuk/gumi-si": [["형곡동","hyeonggok-dong"],["지산동","jisan-dong"],["도량동","doryang-dong"],["광평동","gwangpyeong-dong"],["상모사곡동","sangmosagok-dong"],["임오동","imo-dong"],["신평동","sinpyeong-dong"],["비산동","bisan-dong"],["공단동","gongdan-dong"],["선산읍","seonsan-eup"],["고아읍","goa-eup"]],
+  "gyeongnam/gimhae-si": [["동상동","dongsang-dong"],["부원동","buwon-dong"],["회현동","hoehyeon-dong"],["칠산서부동","chilsanseobu-dong"],["불암동","bulam-dong"],["진례면","jillye-myeon"],["주촌면","juchon-myeon"],["생림면","saengnim-myeon"],["대동면","daedong-myeon"],["상동면","sangdong-myeon"],["한림면","hallim-myeon"]],
+  "gyeongnam/yangsan-si": [["양주동","yangju-dong"],["서창동","seochang-dong"],["소주동","soju-dong"],["평산동","pyeongsan-dong"],["덕계동","deokgye-dong"],["강서동","gangseo-dong"],["상북면","sangbuk-myeon"],["하북면","habuk-myeon"],["원동면","wondong-myeon"]],
+  "gyeongnam/jinju-si": [["성북동","seongbuk-dong"],["중앙동","jungang-dong"],["상봉동","sangbong-dong"],["상대동","sangdae-dong"],["하대동","hadae-dong"],["상평동","sangpyeong-dong"],["판문동","panmun-dong"],["이현동","ihyeon-dong"],["명석면","myeongseok-myeon"],["금산면","geumsan-myeon"],["집현면","jiphyeon-myeon"]],
+
   // 화성시 (면 지역 보강)
   "gyeonggi/hwaseong-si": [["화산동","hwasan-dong"],["매송면","maesong-myeon"],["비봉면","bibong-myeon"],["마도면","mado-myeon"],["송산면","songsan-myeon"],["서신면","seosin-myeon"],["팔탄면","paltan-myeon"],["장안면","jangan-myeon"],["양감면","yanggam-myeon"]],
   // 평택시 (읍·면·동 보강)
