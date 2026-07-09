@@ -110,6 +110,30 @@ const dongExtra = {
   "gyeongbuk/mungyeong-si": [["영순면","yeongsun-myeon"],["산양면","sanyang-myeon"],["호계면","hogye-myeon"],["산북면","sanbuk-myeon"],["동로면","dongno-myeon"],["마성면","maseong-myeon"],["농암면","nongam-myeon"]],
   "gyeongbuk/yeongcheon-si": [["서부동","seobu-dong"],["남부동","nambu-dong"],["청통면","cheongtong-myeon"],["신녕면","sillyeong-myeon"],["화산면","hwasan-myeon"],["임고면","imgo-myeon"],["고경면","gogyeong-myeon"],["북안면","bugan-myeon"],["대창면","daechang-myeon"],["자양면","jayang-myeon"]],
 
+  // ===== 강원 군 면 완성 =====
+  "gangwon/hongcheon-gun": [["두촌면","duchon-myeon"],["북방면","bukbang-myeon"],["내면","nae-myeon"],["영귀미면","yeonggwimi-myeon"]],
+  "gangwon/hoengseong-gun": [["갑천면","gapcheon-myeon"],["청일면","cheongil-myeon"],["서원면","seowon-myeon"],["강림면","gangnim-myeon"]],
+  "gangwon/yeongwol-gun": [["북면","buk-myeon"],["남면","nam-myeon"],["무릉도원면","mureungdowon-myeon"],["산솔면","sansol-myeon"]],
+  "gangwon/pyeongchang-gun": [["미탄면","mitan-myeon"],["방림면","bangnim-myeon"],["용평면","yongpyeong-myeon"]],
+  "gangwon/jeongseon-gun": [["북평면","bukpyeong-myeon"],["임계면","imgye-myeon"],["화암면","hwaam-myeon"],["여량면","yeoryang-myeon"]],
+  "gangwon/cheorwon-gun": [["근남면","geunnam-myeon"],["근북면","geunbuk-myeon"],["원동면","wondong-myeon"]],
+  "gangwon/hwacheon-gun": [["남면","nam-myeon"]],
+  "gangwon/inje-gun": [["상남면","sangnam-myeon"]],
+  "gangwon/goseong-gun": [["수동면","sudong-myeon"]],
+  "gangwon/yangyang-gun": [["현남면","hyeonnam-myeon"]],
+  // ===== 경북 군 면 완성 =====
+  "gyeongbuk/uiseong-gun": [["점곡면","jeomgok-myeon"],["옥산면","oksan-myeon"],["금성면","geumseong-myeon"],["가음면","gaeum-myeon"],["춘산면","chunsan-myeon"],["구천면","gucheon-myeon"],["단밀면","danmil-myeon"],["단북면","danbuk-myeon"],["다인면","dain-myeon"],["신평면","sinpyeong-myeon"],["안평면","anpyeong-myeon"],["안사면","ansa-myeon"]],
+  "gyeongbuk/cheongsong-gun": [["부남면","bunam-myeon"],["현서면","hyeonseo-myeon"],["안덕면","andeok-myeon"]],
+  "gyeongbuk/yeongyang-gun": [["석보면","seokbo-myeon"]],
+  "gyeongbuk/yeongdeok-gun": [["남정면","namjeong-myeon"],["달산면","dalsan-myeon"],["지품면","jipum-myeon"],["창수면","changsu-myeon"]],
+  "gyeongbuk/cheongdo-gun": [["각북면","gakbuk-myeon"],["운문면","unmun-myeon"],["금천면","geumcheon-myeon"],["매전면","maejeon-myeon"]],
+  "gyeongbuk/goryeong-gun": [["덕곡면","deokgok-myeon"],["다산면","dasan-myeon"],["우곡면","ugok-myeon"]],
+  "gyeongbuk/seongju-gun": [["용암면","yongam-myeon"],["수륜면","suryun-myeon"],["가천면","gacheon-myeon"],["금수면","geumsu-myeon"],["벽진면","byeokjin-myeon"]],
+  "gyeongbuk/chilgok-gun": [["가산면","gasan-myeon"],["약목면","yangmok-myeon"],["기산면","gisan-myeon"]],
+  "gyeongbuk/yecheon-gun": [["보문면","bomun-myeon"],["유천면","yucheon-myeon"],["용궁면","yonggung-myeon"],["개포면","gaepo-myeon"],["지보면","jibo-myeon"]],
+  "gyeongbuk/bonghwa-gun": [["소천면","socheon-myeon"],["재산면","jaesan-myeon"],["명호면","myeongho-myeon"],["상운면","sangun-myeon"]],
+  "gyeongbuk/uljin-gun": [["북면","buk-myeon"],["근남면","geunnam-myeon"],["매화면","maehwa-myeon"],["온정면","onjeong-myeon"],["금강송면","geumgangsong-myeon"]],
+
   // 화성시 (면 지역 보강)
   "gyeonggi/hwaseong-si": [["화산동","hwasan-dong"],["매송면","maesong-myeon"],["비봉면","bibong-myeon"],["마도면","mado-myeon"],["송산면","songsan-myeon"],["서신면","seosin-myeon"],["팔탄면","paltan-myeon"],["장안면","jangan-myeon"],["양감면","yanggam-myeon"]],
   // 평택시 (읍·면·동 보강)
