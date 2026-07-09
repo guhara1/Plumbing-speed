@@ -16,6 +16,7 @@ const { seoulDongs } = require("./data/seoul-dongs");
 const { gyeonggiDistricts } = require("./data/gyeonggi");
 const { metros } = require("./data/metros");
 const { provincesDo } = require("./data/provinces-do");
+const { gunDongs } = require("./data/gun-dongs");
 const { composeDong } = require("./data/dong-compose");
 
 const OUT = path.join(__dirname, "dist");
@@ -1061,6 +1062,11 @@ function run() {
     // 도(道) 시·군 → (행정구) → 읍·면·동 구조 연결 (data/provinces-do.js)
     if (provincesDo[r.slug]) {
       r.districts = provincesDo[r.slug];
+      // 리프 군(郡)에 대표 읍·면 병합 (data/gun-dongs.js)
+      r.districts.forEach((d) => {
+        const key = r.slug + "/" + d.slug;
+        if (gunDongs[key] && !d.dongs && !d.subDistricts) d.dongs = gunDongs[key];
+      });
     }
     buildProvince(r);
     r.districts.forEach((d) => buildAreaNode(r, [], d, r.districts));
