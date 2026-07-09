@@ -17,6 +17,7 @@ const { gyeonggiDistricts } = require("./data/gyeonggi");
 const { metros } = require("./data/metros");
 const { provincesDo } = require("./data/provinces-do");
 const { gunDongs } = require("./data/gun-dongs");
+const { dongExtra } = require("./data/dong-extra");
 const { composeDong } = require("./data/dong-compose");
 
 const OUT = path.join(__dirname, "dist");
@@ -1068,6 +1069,20 @@ function run() {
         if (gunDongs[key] && !d.dongs && !d.subDistricts) d.dongs = gunDongs[key];
       });
     }
+    // 추가 동 병합 (data/dong-extra.js) — 임의 깊이 노드에 append, 슬러그 중복 제거
+    (function mergeExtra(prefix, nodes) {
+      nodes.forEach((node) => {
+        const key = prefix + "/" + node.slug;
+        if (dongExtra[key]) {
+          node.dongs = node.dongs || [];
+          const seen = new Set(node.dongs.map((x) => x[1]));
+          dongExtra[key].forEach((x) => {
+            if (!seen.has(x[1])) { node.dongs.push(x); seen.add(x[1]); }
+          });
+        }
+        if (node.subDistricts) mergeExtra(key, node.subDistricts);
+      });
+    })(r.slug, r.districts);
     buildProvince(r);
     r.districts.forEach((d) => buildAreaNode(r, [], d, r.districts));
   });
