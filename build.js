@@ -14,7 +14,8 @@ const { regions } = require("./data/regions");
 const { serviceDepth, symptomDepth, placeDepth } = require("./data/depth");
 const { seoulDongs } = require("./data/seoul-dongs");
 const { gyeonggiDistricts } = require("./data/gyeonggi");
-const { introVariants, sectionThemes, faqExtraVariants } = require("./data/seoul-dong-content");
+const { metros } = require("./data/metros");
+const { composeDong } = require("./data/dong-compose");
 
 const OUT = path.join(__dirname, "dist");
 const pages = []; // {path, title, desc, noindex, changefreq, priority}
@@ -214,13 +215,16 @@ function webPageSchema(p) {
 // 본문 콘텐츠 임계값. 스펙 17장 "본문이 약한 페이지는 noindex" 규칙을 자동으로 적용합니다.
 // 임계값 미만 페이지는 index 대상이라도 자동 noindex 처리하여, 얇은 페이지가 색인되는 것을 방지합니다.
 const MIN_CONTENT_CHARS = 600;
-function visibleLen(bodyHtml) {
+function visibleText(bodyHtml) {
   return bodyHtml
     .replace(/<script[\s\S]*?<\/script>/g, "")
     .replace(/<[^>]+>/g, " ")
     .replace(/&[a-z]+;/g, " ")
     .replace(/\s+/g, " ")
-    .trim().length;
+    .trim();
+}
+function visibleLen(bodyHtml) {
+  return visibleText(bodyHtml).length;
 }
 
 function layout(p) {
@@ -232,10 +236,14 @@ function layout(p) {
     .join("\n");
   const canonical = abs(p.canonical || p.path);
   // 콘텐츠 길이 기반 자동 noindex (명시적 noindex 이거나, 임계값 미만이면 noindex)
-  const contentLen = visibleLen(p.body);
+  const text = visibleText(p.body);
+  const contentLen = text.length;
   const autoThin = !p.forceIndex && contentLen < MIN_CONTENT_CHARS;
   p.noindex = p.noindex || autoThin;
   if (autoThin) layout._thin = (layout._thin || []).concat([[p.path, contentLen]]);
+  // 중복 검사용 본문 텍스트 저장 (지역 페이지 대상)
+  layout._text = layout._text || {};
+  layout._text[p.path] = text;
   const robots = p.noindex ? "noindex,follow" : "index,follow";
   const html = `<!doctype html>
 <html lang="ko">
@@ -589,33 +597,6 @@ ${ctaBand()}
   layout({ path: regions.base, title: h.title, description: h.description, body, schemas: [bc.schema], changefreq: "monthly", priority: 0.7, forceIndex: true });
 }
 
-// 지역 페이지 공통 본문(서비스 축 연결). 지역별 note 로 도입부만 차별화.
-function areaServiceSections(scopeName) {
-  return `
-<section class="section">
-  <h2>${esc(scopeName)} 아파트·빌라 배관 문제 확인</h2>
-  <div class="prose"><p>${esc(scopeName)} 지역의 아파트·빌라는 세대배관과 공용배관을 먼저 구분해야 합니다. 우리 집만 막혔는지, 여러 세대·아래층까지 영향이 있는지에 따라 책임과 작업 범위가 달라집니다. 노후 건물은 공용 오수관 협착으로 여러 세대가 함께 겪는 경우가 흔합니다.</p></div>
-</section>
-<section class="section">
-  <h2>${esc(scopeName)} 상가·식당 하수구막힘 확인</h2>
-  <div class="prose"><p>상가·식당은 바닥 배수(트렌치·유가), 기름때, 공용 배관 문제가 복합적으로 나타납니다. 특히 식당은 다량의 기름과 음식물로 반복 막힘이 잦아, 단순 뚫음보다 고압세척·정기 관리가 근본적인 경우가 많습니다.</p></div>
-</section>
-<section class="section">
-  <h2>싱크대·욕실·변기 막힘의 차이</h2>
-  <div class="prose"><p>싱크대는 기름때·음식물, 욕실 배수구는 머리카락·비누때, 변기는 물티슈·이물질이 주요 원인입니다. 막힌 위치와 물이 역류하는지 여부에 따라 필요한 장비가 달라 원인 확인이 먼저입니다.</p></div>
-  ${chips([{ href: "/drain-clog/sink/", label: "싱크대막힘" }, { href: "/drain-clog/toilet/", label: "변기막힘" }, { href: "/drain-clog/bathroom-drain/", label: "욕실 배수구막힘" }])}
-</section>
-<section class="section">
-  <h2>반복 막힘·배관내시경·고압세척이 필요한 경우</h2>
-  <div class="prose"><p>같은 곳이 반복해서 막힌다면 관벽 오염, 배관 협착·처짐, 공용관·외부 하수관 문제가 남아 있을 수 있습니다. 이때는 뚫음 반복보다 배관내시경으로 내부를 확인하거나 고압세척으로 관벽 오염을 제거하는 것이 재발을 줄입니다.</p></div>
-  ${chips([{ href: "/drain-clog/high-pressure-cleaning/", label: "고압세척" }, { href: "/pipe-work/pipe-camera-inspection/", label: "배관내시경 점검" }, { href: "/pipe-work/leak-repair/", label: "누수 배관 보수" }])}
-</section>
-<section class="section">
-  <h2>작업 전 사진·영상 상담과 비용 기준</h2>
-  <div class="prose"><p>막힌 위치, 역류 여부, 악취·반복 여부, 건물 유형을 알려주시고 증상 사진을 보내주시면 작업 방향을 빠르게 안내할 수 있습니다. 비용은 막힌 위치, 작업 난이도, 장비 사용 여부, 배관 길이, 야간·주말 여부, 현장 접근성에 따라 달라지며 정확한 견적은 현장 확인 후 안내됩니다.</p></div>
-</section>`;
-}
-
 const areaFaq = (scope) => [
   { q: `${scope} 배관공사·하수구막힘 출장이 가능한가요?`, a: "지역, 작업 내용, 현장 상황에 따라 가능 여부를 확인합니다. 정확한 주소와 증상 사진을 보내면 작업 가능 범위를 안내하기 쉽습니다." },
   { q: "여러 곳이 동시에 막혔어요.", a: "공용 배관 또는 외부 하수관 문제일 가능성이 높습니다. 세대 내부만이 아니라 계통 전체를 확인해야 재발을 줄일 수 있습니다." },
@@ -631,13 +612,18 @@ function buildProvince(r) {
         3
       )}</section>`
     : `<section class="section"><div class="callout">${esc(r.fullName)}의 시·군·구별 세부 페이지는 상담 데이터가 쌓이는 대로 순차적으로 확장합니다. 지금도 <a href="${site.phoneHref}">전화 상담</a>과 사진 상담으로 안내가 가능합니다.</div></section>`;
-  const faq = faqBlock(areaFaq(r.name));
+  // 시·도 페이지도 조합형 고유 본문 사용(도별 note 로 도입부 차별화)
+  const composed = composeDong("prov|" + r.slug, r.name, "전국");
+  const composedSections = composed.sections
+    .map((s) => `<section class="section"><h2>${esc(s.h2)}</h2><div class="prose"><p>${esc(s.body)}</p></div></section>`)
+    .join("");
+  const faq = faqBlock(areaFaq(r.name).concat([composed.faqExtra]));
   const body = `
 ${bc.html}
 <h1>${esc(r.fullName)} 배관공사·하수구막힘 안내</h1>
-<div class="lead-block prose"><p>${esc(r.note)} ${esc(r.name)} 지역의 배관공사와 하수구막힘은 증상과 건물 유형, 배관 위치를 먼저 확인한 뒤 작업 방식을 정합니다.</p></div>
+<div class="lead-block prose"><p>${esc(r.note)} ${esc(composed.intro)}</p></div>
 ${districtCards}
-${areaServiceSections(r.name)}
+${composedSections}
 ${ctaBand(esc(r.name) + " 배관공사·하수구막힘 상담")}
 ${faq.html}
 <section class="section related"><h2>주요 서비스 바로가기</h2>${chips([{ href: "/pipe-work/", label: "배관공사" }, { href: "/drain-clog/", label: "하수구막힘" }, { href: "/cost/", label: "비용 안내" }, { href: "/emergency/", label: "긴급 출동" }])}</section>
@@ -681,7 +667,6 @@ function buildAreaNode(r, ancestors, node, siblings) {
   const scope = r.name + " " + chain.map((c) => c.name).join(" ");
   const crumbItems = areaCrumbs(r, ancestors).concat([{ label: node.name }]);
   const bc = breadcrumb(crumbItems);
-  const faq = faqBlock(areaFaq(scope));
 
   // 하위(구 또는 동) 목록 섹션
   let childSection = "";
@@ -707,14 +692,25 @@ ${chips(node.dongs.map(([name, slug]) => ({ href: base + slug + "/", label: name
     ? chips(ancestors.map((c, i) => ({ href: regions.base + r.slug + "/" + ancestors.slice(0, i + 1).map((a) => a.slug).join("/") + "/", label: c.name + " 전체" })))
     : "";
 
+  // 지역명만 바꾼 중복을 피하기 위해, 상위 노드(시/구)도 조합형 고유 본문을 사용.
+  // {G} 토큰 = 직속 상위(구가 있으면 시, 없으면 시·도)
+  const parentName = ancestors.length ? ancestors[ancestors.length - 1].name : r.name;
+  const composed = composeDong("node|" + r.slug + "/" + chain.map((c) => c.slug).join("/"), node.name, parentName);
+  const introText = (node.note ? esc(node.note) + " " : "") + esc(composed.intro);
+  const composedSections = composed.sections
+    .map((s) => `<section class="section"><h2>${esc(s.h2)}</h2><div class="prose"><p>${esc(s.body)}</p></div></section>`)
+    .join("");
+  const faqNode = faqBlock(areaFaq(scope).concat([composed.faqExtra]));
+
   const body = `
 ${bc.html}
 <h1>${esc(scope)} 배관공사·하수구막힘 안내</h1>
-<div class="lead-block prose"><p>${esc(node.note || "")} ${esc(scope)}에서 배관공사·하수구막힘이 필요할 때는 막힌 위치와 증상, 건물 유형을 먼저 확인한 뒤 뚫음·세척·교체·내시경 여부를 정합니다.</p></div>
+<div class="lead-block prose"><p>${introText}</p></div>
 ${childSection}
-${areaServiceSections(scope)}
+${composedSections}
+<section class="section"><h2>${esc(scope)} 서비스 바로가기</h2>${chips([{ href: "/drain-clog/sink/", label: "싱크대막힘" }, { href: "/drain-clog/toilet/", label: "변기막힘" }, { href: "/drain-clog/bathroom-drain/", label: "욕실 배수구막힘" }, { href: "/drain-clog/high-pressure-cleaning/", label: "고압세척" }, { href: "/pipe-work/pipe-camera-inspection/", label: "배관내시경" }, { href: "/pipe-work/leak-repair/", label: "누수 배관 보수" }])}</section>
 ${ctaBand(esc(scope) + " 배관공사·하수구막힘 상담")}
-${faq.html}
+${faqNode.html}
 ${nearbyChips}
 ${parentLinks ? `<section class="section related"><h2>상위 지역</h2>${parentLinks}</section>` : ""}
 <section class="section related"><h2>주요 서비스 바로가기</h2>${chips([{ href: "/pipe-work/", label: "배관공사" }, { href: "/drain-clog/", label: "하수구막힘" }, { href: "/cost/", label: "비용 안내" }, { href: "/process/", label: "작업 과정" }])}</section>
@@ -722,7 +718,7 @@ ${parentLinks ? `<section class="section related"><h2>상위 지역</h2>${parent
   const title = `${scope} 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 출장`;
   const desc = `${scope} 배관공사·하수구막힘 출장 안내입니다. 싱크대·변기·욕실 배수구 막힘, 배관수리·교체, 고압세척, 배관내시경 기준을 확인하세요.`;
   const priority = ancestors.length ? 0.5 : 0.55;
-  layout({ path: base, title, description: desc.slice(0, 155), body, schemas: [bc.schema, faq.schema], changefreq: "monthly", priority });
+  layout({ path: base, title, description: desc.slice(0, 155), body, schemas: [bc.schema, faqNode.schema], changefreq: "monthly", priority });
 
   // 하위 재귀 생성
   if (node.subDistricts && node.subDistricts.length) {
@@ -744,19 +740,13 @@ function buildDong(r, ancestors, parent, dong) {
   const seed = hashStr(r.slug + "|" + chain.map((c) => c.slug).join("|") + "|" + dSlug);
   const bc = breadcrumb(areaCrumbs(r, chain).concat([{ label: dName }]));
 
-  const intro = fill(introVariants[seed % introVariants.length], dName, g);
-  const rot = seed % sectionThemes.length;
-  const secBlocks = sectionThemes.map((theme, t) => {
-    const v = theme[(seed + t * 13 + 7) % theme.length];
-    return { h2: fill(v.h2, dName, g), body: fill(v.body, dName, g) };
-  });
-  const ordered = secBlocks.slice(rot).concat(secBlocks.slice(0, rot));
-  const sectionsHtml = ordered
+  // 조합형 고유 본문 생성 (문장 슬롯 조합 + 테마 선택/순서)
+  const composed = composeDong(r.slug + "/" + chain.map((c) => c.slug).join("/") + "/" + dSlug, dName, g);
+  const intro = composed.intro;
+  const sectionsHtml = composed.sections
     .map((s) => `<section class="section"><h2>${esc(s.h2)}</h2><div class="prose"><p>${esc(s.body)}</p></div></section>`)
     .join("");
-
-  const extra = faqExtraVariants[seed % faqExtraVariants.length];
-  const faq = faqBlock(areaFaq(scope).concat([{ q: fill(extra.q, dName, g), a: fill(extra.a, dName, g) }]));
+  const faq = faqBlock(areaFaq(scope).concat([composed.faqExtra]));
 
   const others = parent.dongs.filter(([, s]) => s !== dSlug);
   const start = seed % Math.max(1, others.length);
@@ -1063,6 +1053,10 @@ function run() {
     if (r.slug === "gyeonggi") {
       r.districts = gyeonggiDistricts;
     }
+    // 광역시 자치구 → 행정동 구조 연결 (data/metros.js)
+    if (metros[r.slug]) {
+      r.districts = metros[r.slug];
+    }
     buildProvince(r);
     r.districts.forEach((d) => buildAreaNode(r, [], d, r.districts));
   });
@@ -1078,6 +1072,100 @@ function run() {
     console.log(`\n[자동 noindex] 본문 ${MIN_CONTENT_CHARS}자 미만으로 색인 제외된 페이지 ${layout._thin.length}개:`);
     layout._thin.sort((a, b) => a[1] - b[1]).forEach(([pth, len]) => console.log(`  - ${pth} (${len}자)`));
     console.log(`  → 본문 보강 후 다시 빌드하면 자동으로 index 로 전환됩니다.`);
+  }
+  checkDuplication();
+}
+
+/* ============================================================
+ *  중복/복사/도어웨이 검사 (MinHash + LSH 근사 중복 탐지)
+ *  지역 리프(동) 페이지들 간 본문 유사도를 측정해, 근사 중복 쌍을 보고합니다.
+ * ============================================================ */
+function prng(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shingles(text, k = 6) {
+  const toks = text.split(/\s+/).filter(Boolean);
+  const set = new Set();
+  if (toks.length < k) {
+    if (toks.length) set.add(toks.join(" "));
+    return set;
+  }
+  for (let i = 0; i + k <= toks.length; i++) set.add(toks.slice(i, i + k).join(" "));
+  return set;
+}
+function checkDuplication() {
+  const NUM = 48, ROWS = 4, BANDS = NUM / ROWS, THRESH = 0.7;
+  // 지역 리프(동) 페이지: /area/<시도>/.../<동>/ 중 하위가 없는 최종 노드.
+  // 판별: /area/ 로 시작하고, 하위 경로를 prefix 로 갖는 다른 경로가 없는 것.
+  // 전국 지역 페이지 전체(시·도 / 시·군·구 / 행정동) 대상. 리프뿐 아니라 중간 노드도 검사.
+  const leaves = Object.keys(layout._text).filter((p) => p.startsWith("/area/") && p !== "/area/");
+  if (leaves.length < 2) return;
+
+  // MinHash 계수(결정적)
+  const rng = prng(1234567);
+  const A = [], B = [];
+  for (let i = 0; i < NUM; i++) { A.push((Math.floor(rng() * 0xffffffff) | 1) >>> 0); B.push(Math.floor(rng() * 0xffffffff) >>> 0); }
+
+  const sigs = new Map();
+  for (const p of leaves) {
+    const sh = shingles(layout._text[p]);
+    const sig = new Array(NUM).fill(0xffffffff);
+    for (const s of sh) {
+      const h = hashStr(s);
+      for (let i = 0; i < NUM; i++) {
+        const v = (Math.imul(A[i], h) + B[i]) >>> 0;
+        if (v < sig[i]) sig[i] = v;
+      }
+    }
+    sigs.set(p, sig);
+  }
+
+  // LSH 밴딩으로 후보쌍 추림
+  const candidates = new Set();
+  for (let b = 0; b < BANDS; b++) {
+    const buckets = new Map();
+    for (const p of leaves) {
+      const sig = sigs.get(p);
+      const key = b + ":" + sig.slice(b * ROWS, b * ROWS + ROWS).join(",");
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(p);
+    }
+    for (const arr of buckets.values()) {
+      if (arr.length < 2) continue;
+      for (let i = 0; i < arr.length; i++)
+        for (let j = i + 1; j < arr.length; j++) candidates.add(arr[i] < arr[j] ? arr[i] + " " + arr[j] : arr[j] + " " + arr[i]);
+    }
+  }
+
+  // 후보쌍 시그니처 유사도 추정
+  let maxSim = 0, nearDup = 0;
+  const flagged = new Set();
+  const worst = [];
+  for (const pair of candidates) {
+    const [x, y] = pair.split(" ");
+    const sx = sigs.get(x), sy = sigs.get(y);
+    let eq = 0;
+    for (let i = 0; i < NUM; i++) if (sx[i] === sy[i]) eq++;
+    const sim = eq / NUM;
+    if (sim > maxSim) maxSim = sim;
+    if (sim >= THRESH) { nearDup++; flagged.add(x); flagged.add(y); worst.push([sim, x, y]); }
+  }
+
+  console.log(`\n[중복/도어웨이 검사] 지역 리프(동) 페이지 ${leaves.length}개 · 후보쌍 ${candidates.size}개`);
+  console.log(`  근사중복 임계값 ${THRESH} 이상 쌍: ${nearDup}개, 관련 페이지: ${flagged.size}개, 관측 최대 유사도: ${maxSim.toFixed(2)}`);
+  if (worst.length) {
+    worst.sort((a, b) => b[0] - a[0]);
+    console.log(`  상위 유사 쌍:`);
+    worst.slice(0, 8).forEach(([s, x, y]) => console.log(`   ${s.toFixed(2)}  ${x}  ⟷  ${y}`));
+    console.log(`  → 유사도가 높으면 data/dong-compose.js 의 문장 풀을 늘려 다양성을 높이세요.`);
+  } else {
+    console.log(`  ✓ 임계값 이상 근사중복 쌍 없음 (도어웨이/복사 위험 낮음)`);
   }
 }
 
