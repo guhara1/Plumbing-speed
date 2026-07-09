@@ -24,11 +24,8 @@ jobs:
           node-version: 20
       - name: Build static site
         run: node build.js
-      # Pages 가 비활성 상태여도 자동으로 활성화(enablement) 시도
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
+      # 주의: GitHub Pages 를 먼저 활성화해야 배포됩니다.
+      # 저장소 Settings → Pages → Source 를 "GitHub Actions" 로 설정하세요.
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
