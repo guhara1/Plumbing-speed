@@ -293,7 +293,7 @@ ${p.body}
 </div></main>
 ${footer()}
 ${mobileBar()}
-${p.path.startsWith("/area/") ? adPopup() : ""}
+${adPopup()}
 <script src="/assets/main.js" defer></script>
 </body>
 </html>`;
