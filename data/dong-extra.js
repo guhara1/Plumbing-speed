@@ -95,6 +95,20 @@ const dongExtra = {
   "gyeongnam/sacheon-si": [["동서금동","dongseogeum-dong"],["선구동","seongu-dong"],["남양동","namyang-dong"],["정동면","jeongdong-myeon"],["사남면","sanam-myeon"],["용현면","yonghyeon-myeon"],["곤양면","gonyang-myeon"],["서포면","seopo-myeon"]],
   "gyeongnam/geoje-si": [["상문동","sangmun-dong"],["장승포동","jangseungpo-dong"],["마전동","majeon-dong"],["아주동","aju-dong"],["일운면","irun-myeon"],["동부면","dongbu-myeon"],["거제면","geoje-myeon"],["사등면","sadeung-myeon"],["연초면","yeoncho-myeon"],["하청면","hacheong-myeon"],["장목면","jangmok-myeon"]],
   "gyeongnam/miryang-si": [["교동","gyo-dong"],["내이동","naei-dong"],["하남읍","hanam-eup"],["초동면","chodong-myeon"],["상남면","sangnam-myeon"],["부북면","bubuk-myeon"],["산외면","sanoe-myeon"],["단장면","danjang-myeon"],["무안면","muan-myeon"]],
+  // 충남 (나머지 시)
+  "chungnam/gongju-si": [["중학동","junghak-dong"],["중동","jung-dong"],["반포면","banpo-myeon"],["이인면","iin-myeon"],["탄천면","tancheon-myeon"],["우성면","useong-myeon"],["사곡면","sagok-myeon"],["정안면","jeongan-myeon"],["의당면","uidang-myeon"],["계룡면","gyeryong-myeon"]],
+  "chungnam/boryeong-si": [["주포면","jupo-myeon"],["주교면","jugyo-myeon"],["오천면","ocheon-myeon"],["청소면","cheongso-myeon"],["청라면","cheongna-myeon"],["남포면","nampo-myeon"],["성주면","seongju-myeon"],["미산면","misan-myeon"]],
+  "chungnam/nonsan-si": [["부적면","bujeok-myeon"],["연산면","yeonsan-myeon"],["벌곡면","beolgok-myeon"],["양촌면","yangchon-myeon"],["가야곡면","gayagok-myeon"],["은진면","eunjin-myeon"],["채운면","chaeun-myeon"],["노성면","noseong-myeon"],["상월면","sangwol-myeon"],["광석면","gwangseok-myeon"]],
+  "chungnam/dangjin-si": [["당진동","dangjin-dong"],["대호지면","daehoji-myeon"],["정미면","jeongmi-myeon"],["면천면","myeoncheon-myeon"],["순성면","sunseong-myeon"],["우강면","ugang-myeon"],["신평면","sinpyeong-myeon"],["송산면","songsan-myeon"],["고대면","godae-myeon"],["석문면","seongmun-myeon"]],
+  "chungnam/gyeryong-si": [["신도안면","sindoan-myeon"]],
+  // 전북 (나머지 시)
+  "jeonbuk/jeongeup-si": [["시기동","sigi-dong"],["장명동","jangmyeong-dong"],["내장상동","naejangsang-dong"],["감곡면","gamgok-myeon"],["정우면","jeongu-myeon"],["태인면","taein-myeon"],["옹동면","ongdong-myeon"],["산외면","sanoe-myeon"],["북면","buk-myeon"],["입암면","ibam-myeon"],["고부면","gobu-myeon"],["칠보면","chilbo-myeon"]],
+  "jeonbuk/namwon-si": [["노암동","noam-dong"],["도통동","dotong-dong"],["인월면","inwol-myeon"],["아영면","ayeong-myeon"],["산내면","sannae-myeon"],["대강면","daegang-myeon"],["사매면","samae-myeon"],["보절면","bojeol-myeon"],["수지면","suji-myeon"],["송동면","songdong-myeon"],["주생면","jusaeng-myeon"],["금지면","geumji-myeon"],["주천면","jucheon-myeon"]],
+  "jeonbuk/gimje-si": [["교월동","gyowol-dong"],["봉남면","bongnam-myeon"],["금구면","geumgu-myeon"],["백구면","baekgu-myeon"],["죽산면","juksan-myeon"],["백산면","baeksan-myeon"],["용지면","yongji-myeon"],["성덕면","seongdeok-myeon"],["공덕면","gongdeok-myeon"],["진봉면","jinbong-myeon"],["금산면","geumsan-myeon"]],
+  // 경북 (나머지 시)
+  "gyeongbuk/sangju-si": [["동문동","dongmun-dong"],["신흥동","sinheung-dong"],["낙동면","nakdong-myeon"],["청리면","cheongni-myeon"],["공성면","gongseong-myeon"],["내서면","naeseo-myeon"],["모동면","modong-myeon"],["화서면","hwaseo-myeon"],["은척면","euncheok-myeon"],["이안면","ian-myeon"],["화북면","hwabuk-myeon"]],
+  "gyeongbuk/mungyeong-si": [["영순면","yeongsun-myeon"],["산양면","sanyang-myeon"],["호계면","hogye-myeon"],["산북면","sanbuk-myeon"],["동로면","dongno-myeon"],["마성면","maseong-myeon"],["농암면","nongam-myeon"]],
+  "gyeongbuk/yeongcheon-si": [["서부동","seobu-dong"],["남부동","nambu-dong"],["청통면","cheongtong-myeon"],["신녕면","sillyeong-myeon"],["화산면","hwasan-myeon"],["임고면","imgo-myeon"],["고경면","gogyeong-myeon"],["북안면","bugan-myeon"],["대창면","daechang-myeon"],["자양면","jayang-myeon"]],
 
   // 화성시 (면 지역 보강)
   "gyeonggi/hwaseong-si": [["화산동","hwasan-dong"],["매송면","maesong-myeon"],["비봉면","bibong-myeon"],["마도면","mado-myeon"],["송산면","songsan-myeon"],["서신면","seosin-myeon"],["팔탄면","paltan-myeon"],["장안면","jangan-myeon"],["양감면","yanggam-myeon"]],
