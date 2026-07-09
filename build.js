@@ -521,7 +521,7 @@ ${reviewsSection()}
     path: "/",
     title: "전국 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 긴급 출장",
     description:
-      "전국 배관공사와 하수구막힘 출장 서비스를 안내합니다. 싱크대막힘, 변기막힘, 욕실 배수구, 상가 하수관, 배관교체, 누수탐지, 고압세척, 배관내시경 점검 기준을 확인하세요.",
+      "전국 배관공사·하수구막힘 24시 긴급출장. 싱크대·변기·배수구막힘, 배관교체·누수·고압세척·배관내시경 상담.",
     body: body + faq.html,
     schemas: [websiteSchema(), orgSchema(), localBusinessSchema(), faq.schema],
     changefreq: "weekly",
@@ -839,7 +839,7 @@ ${parentLinks ? `<section class="section related"><h2>상위 지역</h2>${parent
 <section class="section related"><h2>주요 서비스 바로가기</h2>${chips([{ href: "/pipe-work/", label: "배관공사" }, { href: "/drain-clog/", label: "하수구막힘" }, { href: "/cost/", label: "비용 안내" }, { href: "/process/", label: "작업 과정" }])}</section>
 `;
   const title = `${scope} 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 출장`;
-  const desc = `${scope} 배관공사·하수구막힘 출장 안내입니다. 싱크대·변기·욕실 배수구 막힘, 배관수리·교체, 고압세척, 배관내시경 기준을 확인하세요.`;
+  const desc = `${scope} 배관공사·하수구막힘 24시 출장. 싱크대·변기·배수구막힘, 누수·고압세척·배관내시경 상담.`;
   const priority = ancestors.length ? 0.5 : 0.55;
   layout({ path: base, title, description: desc.slice(0, 155), body, schemas: [bc.schema, faqNode.schema, areaServiceSchema(scope)], changefreq: "monthly", priority });
 
@@ -890,7 +890,7 @@ ${nearbyChips}
 <section class="section related"><h2>${esc(parent.name)} 전체 · 주요 서비스</h2>${chips([{ href: parentBase, label: parent.name + " 전체" }, { href: "/pipe-work/", label: "배관공사" }, { href: "/drain-clog/", label: "하수구막힘" }, { href: "/cost/", label: "비용 안내" }])}</section>
 `;
   const title = `${scope} 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 출장`;
-  const desc = `${scope} 배관공사·하수구막힘 출장 안내. 싱크대·변기·욕실 배수구 막힘, 배관수리·교체, 누수, 고압세척, 배관내시경 점검 기준을 확인하세요.`;
+  const desc = `${scope} 배관공사·하수구막힘 24시 출장. 싱크대·변기·배수구막힘, 누수·고압세척·배관내시경 상담.`;
   // 지역 페이지엔 LocalBusiness 미포함(가짜 지점 방지). WebPage + Breadcrumb + FAQ + Service.
   layout({ path: p, title, description: desc.slice(0, 155), body, schemas: [bc.schema, faq.schema, areaServiceSchema(scope)], changefreq: "monthly", priority: 0.5 });
 }
@@ -1267,6 +1267,14 @@ function run() {
     console.log(`\n[자동 noindex] 본문 ${MIN_CONTENT_CHARS}자 미만으로 색인 제외된 페이지 ${layout._thin.length}개:`);
     layout._thin.sort((a, b) => a[1] - b[1]).forEach(([pth, len]) => console.log(`  - ${pth} (${len}자)`));
     console.log(`  → 본문 보강 후 다시 빌드하면 자동으로 index 로 전환됩니다.`);
+  }
+  // 메타 설명 80자 초과 점검 (네이버 등 SEO 체커 기준)
+  const longDesc = Object.entries(pageMeta).filter(([, m]) => (m.description || "").length > 80);
+  if (longDesc.length) {
+    console.log(`\n[메타 설명 80자 초과] ${longDesc.length}개:`);
+    longDesc.slice(0, 20).forEach(([pth, m]) => console.log(`  - ${pth} (${m.description.length}자)`));
+  } else {
+    console.log(`\n[메타 설명] 전 페이지 80자 이내 ✓`);
   }
   checkDuplication();
 }
