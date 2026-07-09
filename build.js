@@ -94,6 +94,23 @@ function mobileBar() {
 </nav>`;
 }
 
+// 광고 문의 팝업 (지역 페이지 접속 6초 후 노출). 텔레그램으로 연결.
+const AD_TELEGRAM = "https://t.me/googleseolab";
+function adPopup() {
+  return `
+<div class="ad-popup" id="adPopup" role="dialog" aria-modal="true" aria-label="광고 문의">
+  <div class="ad-popup__box">
+    <button class="ad-popup__close" type="button" aria-label="닫기">×</button>
+    <div class="ad-popup__ic">📣</div>
+    <h3>광고 · 제휴 문의</h3>
+    <p>이 지역 배관공사·하수구막힘 <strong>상위 노출·지역 독점 광고</strong>를 원하시나요?<br>아래 버튼으로 편하게 문의해 주세요.</p>
+    <a class="ad-popup__btn" href="${AD_TELEGRAM}" target="_blank" rel="noopener">💬 광고 문의하기 (텔레그램)</a>
+    <div class="ad-popup__sub">클릭하면 텔레그램 상담으로 연결됩니다</div>
+  </div>
+</div>
+<script>(function(){var el=document.getElementById('adPopup');if(!el)return;var box=el.querySelector('.ad-popup__box');function open(){el.classList.add('show');}function close(){el.classList.remove('show');}el.querySelector('.ad-popup__close').addEventListener('click',close);el.addEventListener('click',function(e){if(!box.contains(e.target))close();});setTimeout(open,6000);})();</script>`;
+}
+
 function ctaBand(title = "지금 상황을 알려주세요", text = "전화 상담·사진 상담으로 증상과 지역을 확인하면 작업 방향을 빠르게 안내해 드립니다.") {
   return `
 <section class="cta-band">
@@ -276,6 +293,7 @@ ${p.body}
 </div></main>
 ${footer()}
 ${mobileBar()}
+${p.path.startsWith("/area/") ? adPopup() : ""}
 <script src="/assets/main.js" defer></script>
 </body>
 </html>`;

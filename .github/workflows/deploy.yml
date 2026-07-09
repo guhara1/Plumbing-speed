@@ -24,6 +24,11 @@ jobs:
           node-version: 20
       - name: Build static site
         run: node build.js
+      # Pages 가 비활성 상태여도 자동으로 활성화(enablement) 시도
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

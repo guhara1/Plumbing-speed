@@ -137,6 +137,20 @@ a.chip:hover{background:var(--blue);color:#fff;border-color:var(--blue);text-dec
 .mobile-bar .ic{font-size:1.15rem}
 .mobile-bar .primary{background:var(--orange);color:#fff}
 
+/* ===== 광고 문의 팝업 ===== */
+.ad-popup{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(11,61,99,.55);padding:20px}
+.ad-popup.show{display:flex;animation:apfade .25s ease}
+@keyframes apfade{from{opacity:0}to{opacity:1}}
+.ad-popup__box{background:#fff;border-radius:16px;max-width:360px;width:100%;padding:28px 22px 22px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.32);position:relative;animation:apup .28s ease}
+@keyframes apup{from{transform:translateY(14px);opacity:.6}to{transform:translateY(0);opacity:1}}
+.ad-popup__close{position:absolute;top:8px;right:12px;background:none;border:none;font-size:1.6rem;color:#9aa7b2;cursor:pointer;line-height:1;padding:4px}
+.ad-popup__ic{font-size:2.4rem;line-height:1}
+.ad-popup h3{margin:.35em 0 .15em;color:var(--navy);font-size:1.2rem}
+.ad-popup p{color:#5b6b78;font-size:.92rem;margin:.3em 0 1.2em;line-height:1.6}
+.ad-popup__btn{display:flex;align-items:center;justify-content:center;gap:7px;background:#229ED9;color:#fff;font-weight:800;padding:14px;border-radius:11px;font-size:1rem}
+.ad-popup__btn:hover{background:#1b8fc6;text-decoration:none;color:#fff}
+.ad-popup__sub{margin-top:10px;font-size:.78rem;color:#9aa7b2}
+
 /* ===== Responsive ===== */
 @media(max-width:960px){
   .nav{position:fixed;inset:64px 0 auto 0;flex-direction:column;background:#fff;border-bottom:1px solid var(--line);padding:8px;gap:0;max-height:calc(100vh - 64px);overflow:auto;display:none;box-shadow:var(--shadow)}
