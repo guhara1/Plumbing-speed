@@ -1134,8 +1134,8 @@ function checkDuplication() {
   const NUM = 48, ROWS = 4, BANDS = NUM / ROWS, THRESH = 0.7;
   // 지역 리프(동) 페이지: /area/<시도>/.../<동>/ 중 하위가 없는 최종 노드.
   // 판별: /area/ 로 시작하고, 하위 경로를 prefix 로 갖는 다른 경로가 없는 것.
-  // 전국 지역 페이지 전체(시·도 / 시·군·구 / 행정동) 대상. 리프뿐 아니라 중간 노드도 검사.
-  const leaves = Object.keys(layout._text).filter((p) => p.startsWith("/area/") && p !== "/area/");
+  // 전 페이지 대상(지역·서비스·증상·건물유형·정적 페이지 모두). 유사/중복/도어웨이 전수 점검.
+  const leaves = Object.keys(layout._text);
   if (leaves.length < 2) return;
 
   // MinHash 계수(결정적)
@@ -1188,7 +1188,7 @@ function checkDuplication() {
     if (sim >= THRESH) { nearDup++; flagged.add(x); flagged.add(y); worst.push([sim, x, y]); }
   }
 
-  console.log(`\n[중복/도어웨이 검사] 지역 리프(동) 페이지 ${leaves.length}개 · 후보쌍 ${candidates.size}개`);
+  console.log(`\n[중복/도어웨이 검사] 전 페이지 ${leaves.length}개 · 후보쌍 ${candidates.size}개`);
   console.log(`  근사중복 임계값 ${THRESH} 이상 쌍: ${nearDup}개, 관련 페이지: ${flagged.size}개, 관측 최대 유사도: ${maxSim.toFixed(2)}`);
   if (worst.length) {
     worst.sort((a, b) => b[0] - a[0]);
