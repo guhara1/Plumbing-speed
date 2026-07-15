@@ -1,12 +1,12 @@
 // 전역 사이트 설정 - 연락처/브랜드/네비게이션은 모두 여기서 관리합니다.
 const site = {
   name: "스피드 배관공사",
-  tagline: "전국 배관공사 · 하수구막힘 긴급 출장 센터",
+  tagline: "전국 24시 배관공사 · 하수구막힘 긴급출동 센터 (연중무휴)",
   // 실제 운영 시 아래 값들을 실제 정보로 교체하세요.
-  phone: "1600-0000",
-  phoneHref: "tel:16000000",
-  sms: "010-0000-0000",
-  smsHref: "sms:01000000000",
+  phone: "010-5183-4300",
+  phoneHref: "tel:01051834300",
+  sms: "010-5183-4300",
+  smsHref: "sms:01051834300",
   kakao: "#",
   email: "help@speed-plumbing.co.kr",
   // 실제 사무실이 있는 단일 주소만 LocalBusiness 로 사용합니다. (가짜 지점 금지)
@@ -35,9 +35,6 @@ const mainMenu = [
     href: "/pipe-work/",
     children: [
       { label: "배관공사 안내", href: "/pipe-work/" },
-      { label: "누수탐지·누수공사", href: "/pipe-work/leak-detection/" },
-      { label: "수전교체·수도수리", href: "/pipe-work/faucet-replacement/" },
-      { label: "변기교체·부속품수리", href: "/pipe-work/toilet-replacement/" },
       { label: "배관수리", href: "/pipe-work/repair/" },
       { label: "배관교체", href: "/pipe-work/replacement/" },
       { label: "노후 배관교체", href: "/pipe-work/old-pipe-replacement/" },
@@ -57,8 +54,6 @@ const mainMenu = [
       { label: "하수구막힘 안내", href: "/drain-clog/" },
       { label: "싱크대막힘", href: "/drain-clog/sink/" },
       { label: "변기막힘", href: "/drain-clog/toilet/" },
-      { label: "세면대막힘", href: "/drain-clog/basin/" },
-      { label: "배수구막힘·뚫음", href: "/drain-clog/drain-outlet/" },
       { label: "욕실 배수구막힘", href: "/drain-clog/bathroom-drain/" },
       { label: "주방 배관막힘", href: "/drain-clog/kitchen-drain/" },
       { label: "베란다 배수구막힘", href: "/drain-clog/veranda-drain/" },
@@ -68,6 +63,21 @@ const mainMenu = [
       { label: "오수관·하수관막힘", href: "/drain-clog/sewer-line/" },
       { label: "맨홀막힘", href: "/drain-clog/manhole/" },
       { label: "고압세척", href: "/drain-clog/high-pressure-cleaning/" },
+    ],
+  },
+  {
+    label: "수전·설비",
+    href: "/fixture/",
+    children: [
+      { label: "수전·설비 안내", href: "/fixture/" },
+      { label: "수전교체", href: "/fixture/faucet-replacement/" },
+      { label: "싱크대수전교체", href: "/fixture/sink-faucet/" },
+      { label: "화장실수전교체", href: "/fixture/bathroom-faucet/" },
+      { label: "세면대교체", href: "/fixture/washbasin-replacement/" },
+      { label: "세면대막힘", href: "/fixture/washbasin-clog/" },
+      { label: "화장실변기교체", href: "/fixture/toilet-replacement/" },
+      { label: "변기부속품수리", href: "/fixture/toilet-parts/" },
+      { label: "수도수리·수도누수", href: "/fixture/water-repair/" },
     ],
   },
   {
@@ -111,6 +121,7 @@ const mainMenu = [
 const footerLinks = [
   { label: "배관공사", href: "/pipe-work/" },
   { label: "하수구막힘", href: "/drain-clog/" },
+  { label: "수전·설비", href: "/fixture/" },
   { label: "막힘 증상", href: "/symptom/" },
   { label: "건물 유형", href: "/place/" },
   { label: "전국 지역", href: "/area/" },

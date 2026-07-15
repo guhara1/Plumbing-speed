@@ -137,20 +137,6 @@ a.chip:hover{background:var(--blue);color:#fff;border-color:var(--blue);text-dec
 .mobile-bar .ic{font-size:1.15rem}
 .mobile-bar .primary{background:var(--orange);color:#fff}
 
-/* ===== 이미지 슬롯 ===== */
-.img-item{margin:0}
-.img-frame{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(135deg,#eef3f7,#dfe8f0);aspect-ratio:16/10}
-.img-frame img{width:100%;height:100%;object-fit:cover;display:block}
-.img-frame figcaption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(11,61,99,.78));color:#fff;font-size:.82rem;font-weight:600;padding:20px 12px 9px}
-/* 이미지 파일이 없을 때(onerror) 플레이스홀더 */
-.img-frame.img-ph{display:grid;place-items:center}
-.img-frame.img-ph img{display:none}
-.img-frame.img-ph figcaption{position:static;background:none;color:#5b6b78;text-align:center;padding:0 12px}
-.img-frame.img-ph::before{content:"🛠";font-size:1.8rem;opacity:.5;margin-bottom:2px}
-.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
-.img-duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:560px){.img-duo{grid-template-columns:1fr}}
-
 /* ===== 후기 ===== */
 .review-agg{font-size:.9rem;font-weight:700;color:var(--orange);background:#fff4ec;padding:3px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
 .review-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
@@ -193,4 +179,17 @@ a.chip:hover{background:var(--blue);color:#fff;border-color:var(--blue);text-dec
   .grid.c2,.grid.c3,.grid.c4{grid-template-columns:1fr}
   .hero{padding:40px 0 34px}
   .topbar{display:none}
+}
+
+/* ===== 이미지(시공 사진) 슬롯 ===== */
+.figure{margin:1.3em 0}
+.figure .media{position:relative;aspect-ratio:16/10;border-radius:var(--radius);overflow:hidden;background:linear-gradient(135deg,var(--sky),#d9e8f6);box-shadow:var(--shadow)}
+.figure .media::after{content:attr(data-label);position:absolute;inset:0;display:grid;place-items:center;color:var(--navy);opacity:.5;font-weight:800;font-size:.9rem;letter-spacing:.02em;text-align:center;padding:14px}
+.figure .media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;background:var(--sky)}
+.figure figcaption{margin-top:8px;font-size:.85rem;color:var(--muted);text-align:center;line-height:1.5}
+.img-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.img-gallery .figure{margin:0}
+@media(max-width:520px){
+  .img-gallery{grid-template-columns:repeat(2,1fr);gap:12px}
+  .img-gallery figcaption{font-size:.78rem}
 }
