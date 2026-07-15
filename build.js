@@ -8,6 +8,8 @@ const path = require("path");
 
 const { site, mainMenu, footerLinks } = require("./data/site");
 const { pipeWork, drainClog } = require("./data/services");
+const { fixtures } = require("./data/fixtures");
+const { images } = require("./data/images");
 const { symptoms } = require("./data/symptoms");
 const { places } = require("./data/places");
 const { regions } = require("./data/regions");
@@ -142,18 +144,28 @@ function reviewsSection() {
 
 // 롱테일 내부링크: 지역명 + 서비스/증상 앵커로 기존 페이지에 연결 (신규 얇은 페이지 생성 없음)
 const LONGTAIL_TARGETS = [
-  ["/drain-clog/sink/", "싱크대막힘"],
-  ["/drain-clog/toilet/", "변기막힘"],
-  ["/drain-clog/bathroom-drain/", "욕실 배수구막힘"],
   ["/drain-clog/", "하수구막힘"],
+  ["/drain-clog/sink/", "싱크대하수구막힘"],
+  ["/drain-clog/toilet/", "변기막힘"],
+  ["/drain-clog/bathroom-drain/", "배수구막힘"],
+  ["/drain-clog/kitchen-drain/", "주방배수구막힘"],
   ["/drain-clog/high-pressure-cleaning/", "고압세척"],
-  ["/drain-clog/sewer-line/", "하수관막힘"],
-  ["/pipe-work/", "배관공사"],
-  ["/pipe-work/leak-repair/", "누수 배관 보수"],
+  ["/drain-clog/sewer-line/", "배관막힘"],
+  ["/fixture/washbasin-clog/", "세면대막힘"],
+  ["/fixture/faucet-replacement/", "수전교체"],
+  ["/fixture/sink-faucet/", "싱크대수전교체"],
+  ["/fixture/bathroom-faucet/", "화장실수전교체"],
+  ["/fixture/washbasin-replacement/", "세면대교체"],
+  ["/fixture/toilet-replacement/", "화장실변기교체"],
+  ["/fixture/toilet-parts/", "변기부속품수리"],
+  ["/fixture/water-repair/", "수도수리·수도누수"],
+  ["/pipe-work/", "배관설비"],
+  ["/pipe-work/leak-repair/", "누수탐지·누수공사"],
   ["/pipe-work/replacement/", "배관교체"],
   ["/pipe-work/pipe-camera-inspection/", "배관내시경"],
-  ["/symptom/backflow/", "하수구 역류"],
-  ["/symptom/repeated-clog/", "반복 막힘"],
+  ["/pipe-work/bathroom-pipe/", "욕실배관누수"],
+  ["/pipe-work/kitchen-pipe/", "주방배관누수"],
+  ["/symptom/backflow/", "역류·물샘"],
 ];
 function longtailLinks(scope) {
   const items = LONGTAIL_TARGETS.map(([href, kw]) => ({ href, label: `${scope} ${kw}` }));
@@ -203,6 +215,25 @@ function faqBlock(faqs) {
     })),
   };
   return { html, schema };
+}
+
+// 이미지(시공 사진) 슬롯. 실제 파일 assets/img/NN.jpg 가 있으면 사진이,
+// 없으면 회색 자리(placeholder)가 노출됩니다. n 은 1부터 시작(이미지 번호).
+// scope 를 주면 지역명을 alt 앞에 붙여 지역별 이미지 SEO 를 확보합니다.
+function figure(n, opts = {}) {
+  const idx = ((n - 1) % images.length + images.length) % images.length;
+  const im = images[idx];
+  const num = String(idx + 1).padStart(2, "0");
+  const alt = opts.scope ? `${opts.scope} ${im.alt}` : im.alt;
+  const showCap = opts.caption !== false;
+  const capText = opts.caption || im.caption;
+  const cap = showCap ? `<figcaption>${esc(capText)}</figcaption>` : "";
+  return `<figure class="figure"><div class="media" data-label="시공 사진 준비 중 (${num})"><img src="/assets/img/${num}.jpg" alt="${esc(alt)}" loading="lazy" decoding="async" width="800" height="500" onerror="this.style.display='none'"></div>${cap}</figure>`;
+}
+
+// 여러 장을 그리드로. nums: 이미지 번호 배열. scope 로 지역 alt 부여.
+function imageGallery(nums, scope) {
+  return `<div class="img-gallery">${nums.map((n) => figure(n, scope ? { scope } : {})).join("")}</div>`;
 }
 
 function cardGrid(items, cols = 3) {
@@ -416,10 +447,13 @@ function buildHome() {
     ["/drain-clog/restaurant-drain/", "식당 하수구막힘", "기름때·그리스트랩"],
     ["/drain-clog/high-pressure-cleaning/", "고압세척", "관벽 오염 제거"],
     ["/pipe-work/pipe-camera-inspection/", "배관내시경", "내부 촬영 진단"],
-    ["/pipe-work/leak-repair/", "누수 배관 보수", "누수탐지·최소 개봉"],
+    ["/pipe-work/leak-repair/", "누수탐지·누수공사", "누수탐지·최소 개봉"],
     ["/pipe-work/replacement/", "배관교체", "노후·반복 누수"],
-    ["/pipe-work/repair/", "긴급 배관수리", "이음부·부분 파손"],
-  ].map(([href, title, text]) => ({ href, title, text, tag: href.startsWith("/pipe") ? "배관공사" : "하수구막힘" }));
+    ["/fixture/faucet-replacement/", "수전교체", "싱크대·화장실 수전"],
+    ["/fixture/washbasin-clog/", "세면대막힘", "팝업·트랩 이물"],
+    ["/fixture/toilet-replacement/", "변기교체·부속", "변기교체·부속 수리"],
+    ["/fixture/water-repair/", "수도수리·수도누수", "연결부 물샘 보수"],
+  ].map(([href, title, text]) => ({ href, title, text, tag: href.startsWith("/pipe") ? "배관공사" : href.startsWith("/fixture") ? "수전·설비" : "하수구막힘" }));
 
   const sym = symptoms.items.map((s) => ({ href: symptoms.base + s.slug + "/", label: s.name }));
   const placeChips = places.items.map((pl) => ({ href: places.base + pl.slug + "/", label: pl.name }));
@@ -444,8 +478,8 @@ function buildHome() {
       <span class="badge">전국 출장</span><span class="badge">24시 긴급</span>
       <span class="badge">사진 상담</span><span class="badge">배관내시경·고압세척</span>
     </div>
-    <h1>전국 배관공사 · 하수구막힘 긴급 출장 안내</h1>
-    <p class="lead">싱크대막힘, 변기막힘, 욕실 배수구막힘, 상가 하수구막힘, 노후 배관교체, 누수 배관 보수, 고압세척, 배관내시경 점검까지 현장 상황에 맞는 작업 기준을 안내합니다.</p>
+    <h1>전국 배관공사 · 하수구막힘 · 수전설비 24시 긴급출동</h1>
+    <p class="lead">하수구막힘·배관막힘·변기막힘·세면대막힘·배수구막힘부터 누수탐지·누수공사·수도수리, 수전교체·싱크대수전교체·화장실수전교체, 세면대교체·화장실변기교체·변기부속품수리, 고압세척·배관내시경까지 — 이물질 제거부터 역류·물샘·부품 교체까지 현장 상황에 맞는 작업 기준과 비용을 안내합니다.</p>
     <div class="hero-cta">
       <a class="btn btn-call" href="${site.phoneHref}">📞 전화 상담 ${esc(site.phone)}</a>
       <a class="btn btn-line" href="/photo-consult/">📷 사진 보내기</a>
@@ -465,6 +499,12 @@ function buildHome() {
 <section class="section">
   <h2>주요 서비스 안내</h2>
   ${cardGrid(services, 4)}
+</section>
+
+<section class="section">
+  <h2>시공 사진</h2>
+  <p class="prose">배관공사·하수구막힘·수전교체·세면대·변기교체·누수탐지·고압세척 등 실제 작업 사진입니다. (사진은 순차적으로 업데이트됩니다.)</p>
+  ${imageGallery(Array.from({ length: images.length }, (_, i) => i + 1))}
 </section>
 
 <section class="section">
@@ -504,6 +544,9 @@ ${reviewsSection()}
     ["/drain-clog/sink/", "싱크대막힘"], ["/drain-clog/toilet/", "변기막힘"], ["/drain-clog/bathroom-drain/", "욕실 배수구막힘"],
     ["/drain-clog/kitchen-drain/", "주방 배관막힘"], ["/drain-clog/commercial-drain/", "상가 하수구막힘"], ["/drain-clog/restaurant-drain/", "식당 하수구막힘"],
     ["/drain-clog/sewer-line/", "오수관·하수관막힘"], ["/drain-clog/manhole/", "맨홀막힘"], ["/drain-clog/high-pressure-cleaning/", "고압세척"],
+    ["/fixture/faucet-replacement/", "수전교체"], ["/fixture/sink-faucet/", "싱크대수전교체"], ["/fixture/bathroom-faucet/", "화장실수전교체"],
+    ["/fixture/washbasin-replacement/", "세면대교체"], ["/fixture/washbasin-clog/", "세면대막힘"], ["/fixture/toilet-replacement/", "화장실변기교체"],
+    ["/fixture/toilet-parts/", "변기부속품수리"], ["/fixture/water-repair/", "수도수리·수도누수"],
     ["/symptom/slow-drain/", "물이 천천히 내려감"], ["/symptom/backflow/", "물이 역류함"], ["/symptom/bad-smell/", "악취"],
     ["/symptom/repeated-clog/", "반복 막힘"], ["/place/apartment/", "아파트"], ["/place/restaurant/", "식당"], ["/place/factory/", "공장"],
   ].map(([href, label]) => ({ href, label })))}
@@ -519,9 +562,9 @@ ${reviewsSection()}
 
   layout({
     path: "/",
-    title: "전국 배관공사·하수구막힘｜싱크대·변기·배수구 막힘 긴급 출장",
+    title: "전국 배관공사·하수구막힘·수전교체｜변기막힘·누수탐지 24시 출동",
     description:
-      "전국 배관공사·하수구막힘 24시 긴급출장. 싱크대·변기·배수구막힘, 배관교체·누수·고압세척·배관내시경 상담.",
+      "전국 24시 배관공사·하수구막힘·수전교체. 변기막힘·세면대막힘·누수탐지·수도수리·고압세척 상담.",
     body: body + faq.html,
     schemas: [websiteSchema(), orgSchema(), localBusinessSchema(), faq.schema],
     changefreq: "weekly",
@@ -825,10 +868,12 @@ ${chips(node.dongs.map(([name, slug]) => ({ href: base + slug + "/", label: name
     .join("");
   const faqNode = faqBlock(areaFaq(scope).concat([composed.faqExtra]));
 
+  const nodeImg = (hashStr(base) % images.length) + 1;
   const body = `
 ${bc.html}
 <h1>${esc(scope)} 배관공사·하수구막힘 안내</h1>
 <div class="lead-block prose"><p>${introText}</p></div>
+${figure(nodeImg, { scope, caption: esc(scope) + " 배관공사·하수구막힘·수전교체 시공 사진" })}
 ${childSection}
 ${composedSections}
 ${longtailLinks(scope)}
@@ -878,10 +923,12 @@ function buildDong(r, ancestors, parent, dong) {
     ? `<section class="section related"><h2>${esc(parent.name)} 주변 동네</h2>${chips(nearby.map(([name, s]) => ({ href: parentBase + s + "/", label: name })))}</section>`
     : "";
 
+  const dongImg = (seed % images.length) + 1;
   const body = `
 ${bc.html}
 <h1>${esc(scope)} 배관공사·하수구막힘 안내</h1>
 <div class="lead-block prose"><p>${esc(intro)}</p></div>
+${figure(dongImg, { scope, caption: esc(scope) + " 배관공사·하수구막힘·수전교체 시공 사진" })}
 ${sectionsHtml}
 ${longtailLinks(scope)}
 ${ctaBand(esc(scope) + " 배관공사·하수구막힘 상담")}
@@ -1186,10 +1233,17 @@ Sitemap: ${abs("/sitemap.xml")}
 /* ---- copy assets ---- */
 function copyAssets() {
   const dest = path.join(OUT, "assets");
-  fs.mkdirSync(dest, { recursive: true });
-  for (const f of fs.readdirSync(path.join(__dirname, "assets"))) {
-    fs.copyFileSync(path.join(__dirname, "assets", f), path.join(dest, f));
-  }
+  const copyDir = (src, dst) => {
+    fs.mkdirSync(dst, { recursive: true });
+    for (const f of fs.readdirSync(src)) {
+      if (f.endsWith(".md")) continue; // 안내용 README 등은 배포에서 제외
+      const s = path.join(src, f);
+      const d = path.join(dst, f);
+      if (fs.statSync(s).isDirectory()) copyDir(s, d);
+      else fs.copyFileSync(s, d);
+    }
+  };
+  copyDir(path.join(__dirname, "assets"), dest);
   // .nojekyll (GitHub Pages 에서 _ 디렉토리 처리 방지 및 정적 그대로 서빙)
   fs.writeFileSync(path.join(OUT, ".nojekyll"), "");
   // 404
@@ -1211,6 +1265,8 @@ function run() {
   pipeWork.items.forEach((it) => buildServiceItem(pipeWork, "배관공사", it));
   buildServiceHub(drainClog, "하수구막힘");
   drainClog.items.forEach((it) => buildServiceItem(drainClog, "하수구막힘", it));
+  buildServiceHub(fixtures, "수전·설비");
+  fixtures.items.forEach((it) => buildServiceItem(fixtures, "수전·설비", it));
 
   buildSymptomHub();
   symptoms.items.forEach(buildSymptomItem);

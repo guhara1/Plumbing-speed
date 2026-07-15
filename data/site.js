@@ -66,6 +66,21 @@ const mainMenu = [
     ],
   },
   {
+    label: "수전·설비",
+    href: "/fixture/",
+    children: [
+      { label: "수전·설비 안내", href: "/fixture/" },
+      { label: "수전교체", href: "/fixture/faucet-replacement/" },
+      { label: "싱크대수전교체", href: "/fixture/sink-faucet/" },
+      { label: "화장실수전교체", href: "/fixture/bathroom-faucet/" },
+      { label: "세면대교체", href: "/fixture/washbasin-replacement/" },
+      { label: "세면대막힘", href: "/fixture/washbasin-clog/" },
+      { label: "화장실변기교체", href: "/fixture/toilet-replacement/" },
+      { label: "변기부속품수리", href: "/fixture/toilet-parts/" },
+      { label: "수도수리·수도누수", href: "/fixture/water-repair/" },
+    ],
+  },
+  {
     label: "막힘 증상",
     href: "/symptom/",
     children: [
@@ -106,6 +121,7 @@ const mainMenu = [
 const footerLinks = [
   { label: "배관공사", href: "/pipe-work/" },
   { label: "하수구막힘", href: "/drain-clog/" },
+  { label: "수전·설비", href: "/fixture/" },
   { label: "막힘 증상", href: "/symptom/" },
   { label: "건물 유형", href: "/place/" },
   { label: "전국 지역", href: "/area/" },
