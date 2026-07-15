@@ -142,17 +142,23 @@ function reviewsSection() {
 
 // 롱테일 내부링크: 지역명 + 서비스/증상 앵커로 기존 페이지에 연결 (신규 얇은 페이지 생성 없음)
 const LONGTAIL_TARGETS = [
+  ["/drain-clog/", "하수구막힘"],
   ["/drain-clog/sink/", "싱크대막힘"],
   ["/drain-clog/toilet/", "변기막힘"],
+  ["/drain-clog/basin/", "세면대막힘"],
+  ["/drain-clog/drain-outlet/", "배수구막힘"],
   ["/drain-clog/bathroom-drain/", "욕실 배수구막힘"],
-  ["/drain-clog/", "하수구막힘"],
+  ["/drain-clog/kitchen-drain/", "주방 배수구막힘"],
   ["/drain-clog/high-pressure-cleaning/", "고압세척"],
-  ["/drain-clog/sewer-line/", "하수관막힘"],
-  ["/pipe-work/", "배관공사"],
-  ["/pipe-work/leak-repair/", "누수 배관 보수"],
-  ["/pipe-work/replacement/", "배관교체"],
+  ["/pipe-work/leak-detection/", "누수탐지"],
+  ["/pipe-work/leak-detection/", "수도누수"],
+  ["/pipe-work/leak-repair/", "누수공사"],
+  ["/pipe-work/faucet-replacement/", "수전교체"],
+  ["/pipe-work/toilet-replacement/", "변기교체·부속품"],
   ["/pipe-work/pipe-camera-inspection/", "배관내시경"],
-  ["/symptom/backflow/", "하수구 역류"],
+  ["/pipe-work/replacement/", "배관교체"],
+  ["/pipe-work/", "배관설비"],
+  ["/symptom/backflow/", "역류"],
   ["/symptom/repeated-clog/", "반복 막힘"],
 ];
 function longtailLinks(scope) {
@@ -407,18 +413,18 @@ function writeFile(routePath, html) {
 /* ---- Home ---- */
 function buildHome() {
   const services = [
-    ["/pipe-work/", "배관공사", "배관수리·교체·누수 보수"],
     ["/drain-clog/", "하수구막힘", "싱크대·변기·배수구 막힘"],
-    ["/drain-clog/sink/", "싱크대막힘", "기름때·음식물 배관"],
-    ["/drain-clog/toilet/", "변기막힘", "물티슈·이물질"],
-    ["/drain-clog/bathroom-drain/", "욕실 배수구막힘", "머리카락·비누때"],
-    ["/drain-clog/commercial-drain/", "상가 하수구막힘", "바닥 배수·공용관"],
-    ["/drain-clog/restaurant-drain/", "식당 하수구막힘", "기름때·그리스트랩"],
+    ["/drain-clog/sink/", "싱크대막힘", "기름때·음식물 이물질"],
+    ["/drain-clog/toilet/", "변기막힘", "물티슈·이물질 제거"],
+    ["/drain-clog/basin/", "세면대막힘", "머리카락·이물질"],
+    ["/drain-clog/drain-outlet/", "배수구막힘·뚫음", "이물질 제거"],
     ["/drain-clog/high-pressure-cleaning/", "고압세척", "관벽 오염 제거"],
+    ["/pipe-work/leak-detection/", "누수탐지·누수공사", "수도누수·물샘 위치"],
+    ["/pipe-work/faucet-replacement/", "수전교체·수도수리", "싱크대·세면대·화장실"],
+    ["/pipe-work/toilet-replacement/", "변기교체·부속품수리", "양변기·물샘"],
     ["/pipe-work/pipe-camera-inspection/", "배관내시경", "내부 촬영 진단"],
-    ["/pipe-work/leak-repair/", "누수 배관 보수", "누수탐지·최소 개봉"],
-    ["/pipe-work/replacement/", "배관교체", "노후·반복 누수"],
-    ["/pipe-work/repair/", "긴급 배관수리", "이음부·부분 파손"],
+    ["/pipe-work/replacement/", "배관교체·설비", "노후·반복 누수"],
+    ["/pipe-work/", "배관공사", "배관막힘·배관설비"],
   ].map(([href, title, text]) => ({ href, title, text, tag: href.startsWith("/pipe") ? "배관공사" : "하수구막힘" }));
 
   const sym = symptoms.items.map((s) => ({ href: symptoms.base + s.slug + "/", label: s.name }));
@@ -445,7 +451,7 @@ function buildHome() {
       <span class="badge">사진 상담</span><span class="badge">배관내시경·고압세척</span>
     </div>
     <h1>전국 배관공사 · 하수구막힘 긴급 출장 안내</h1>
-    <p class="lead">싱크대막힘, 변기막힘, 욕실 배수구막힘, 상가 하수구막힘, 노후 배관교체, 누수 배관 보수, 고압세척, 배관내시경 점검까지 현장 상황에 맞는 작업 기준을 안내합니다.</p>
+    <p class="lead">하수구막힘, 싱크대·세면대막힘, 변기막힘, 배수구막힘·배수구뚫음, 누수탐지·누수공사·수도누수, 수전교체·수도수리, 변기교체·부속품수리, 배관막힘·배관설비, 고압세척, 배관내시경까지 현장 상황에 맞는 작업 기준을 안내합니다.</p>
     <div class="hero-cta">
       <a class="btn btn-call" href="${site.phoneHref}">📞 전화 상담 ${esc(site.phone)}</a>
       <a class="btn btn-line" href="/photo-consult/">📷 사진 보내기</a>

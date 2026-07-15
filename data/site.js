@@ -35,6 +35,9 @@ const mainMenu = [
     href: "/pipe-work/",
     children: [
       { label: "배관공사 안내", href: "/pipe-work/" },
+      { label: "누수탐지·누수공사", href: "/pipe-work/leak-detection/" },
+      { label: "수전교체·수도수리", href: "/pipe-work/faucet-replacement/" },
+      { label: "변기교체·부속품수리", href: "/pipe-work/toilet-replacement/" },
       { label: "배관수리", href: "/pipe-work/repair/" },
       { label: "배관교체", href: "/pipe-work/replacement/" },
       { label: "노후 배관교체", href: "/pipe-work/old-pipe-replacement/" },
@@ -54,6 +57,8 @@ const mainMenu = [
       { label: "하수구막힘 안내", href: "/drain-clog/" },
       { label: "싱크대막힘", href: "/drain-clog/sink/" },
       { label: "변기막힘", href: "/drain-clog/toilet/" },
+      { label: "세면대막힘", href: "/drain-clog/basin/" },
+      { label: "배수구막힘·뚫음", href: "/drain-clog/drain-outlet/" },
       { label: "욕실 배수구막힘", href: "/drain-clog/bathroom-drain/" },
       { label: "주방 배관막힘", href: "/drain-clog/kitchen-drain/" },
       { label: "베란다 배수구막힘", href: "/drain-clog/veranda-drain/" },
