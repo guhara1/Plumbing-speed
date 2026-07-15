@@ -49,8 +49,8 @@ function menuHtml() {
 function header() {
   return `
 <div class="topbar"><div class="wrap">
-  <span>전국 배관공사 · 하수구막힘 24시 긴급 출장</span>
-  <span>상담 전화 <strong>${esc(site.phone)}</strong></span>
+  <span>🚨 전국 24시간 연중무휴 긴급출동 · 배관공사 · 하수구막힘</span>
+  <span>24시 상담·출동 전화 <strong>${esc(site.phone)}</strong></span>
 </div></div>
 <header class="site-header"><div class="wrap header-inner">
   <a class="brand" href="/"><span class="logo">🔧</span><span>${esc(site.name)}<small>${esc(site.tagline)}</small></span></a>
@@ -989,12 +989,18 @@ function buildStaticPages() {
   staticPage({
     path: "/emergency/",
     forceIndex: true,
-    title: "긴급 출동 안내｜야간·주말 배관·하수구막힘",
-    description: "역류·누수 등 긴급 상황 시 야간·주말 배관공사·하수구막힘 출동 전 확인 사항을 안내합니다.",
-    h1: "긴급 출동 안내",
+    title: "24시 긴급출동 안내｜야간·주말·심야 배관·하수구막힘 연중무휴",
+    description: "24시간 연중무휴 긴급출동. 역류·누수 등 급한 상황은 심야·새벽·주말·공휴일에도 전화 주시면 신속히 안내·출동합니다.",
+    h1: "24시 긴급출동 안내",
     crumb: "긴급 출동",
     bodyMain: `
-<div class="lead-block prose"><p>물이 역류하거나 누수로 아래층까지 피해가 우려되는 상황은 빠른 확인이 중요합니다. 출동 전 아래 내용을 알려주시면 준비와 안내가 빨라집니다.</p></div>
+<div class="lead-block prose"><p><strong>저희는 24시간 연중무휴로 운영하는 긴급출동 업체입니다.</strong> 심야·새벽·주말·공휴일 가리지 않고 전화 한 통이면 상담해 드립니다. 물이 역류하거나 누수로 아래층까지 피해가 우려되는 상황은 시간을 다투므로, 지금 바로 <a href="${site.phoneHref}"><strong>${esc(site.phone)}</strong></a> 로 연락 주세요.</p></div>
+<section class="section"><h2>24시 긴급출동, 이래서 다릅니다</h2><ul class="checklist">
+  <li>🕛 <strong>24시간 · 365일 연중무휴</strong> — 심야·새벽·공휴일에도 전화 상담</li>
+  <li>🚨 <strong>역류·누수 긴급 상황 우선 대응</strong> — 급한 순서대로 신속 안내</li>
+  <li>📞 <strong>전화 한 통 원스톱 접수</strong> — 위치·증상만 알려주시면 바로 준비</li>
+  <li>📍 <strong>전국 출장</strong> — 지역·상황에 따라 가장 가까운 기사 배정</li>
+</ul></section>
 <section class="section"><h2>출동 전 확인해 주세요</h2><ul class="checklist">
   <li>지금 물이 역류하고 있나요, 멈췄나요?</li>
   <li>어느 위치에서 문제가 생겼나요?</li>
@@ -1003,8 +1009,11 @@ function buildStaticPages() {
   <li>정확한 주소와 건물 유형</li>
 </ul></section>
 <section class="section"><div class="callout"><strong>임시 조치:</strong> 역류가 심하면 해당 배수구·변기 사용을 멈추고, 누수가 있다면 가능한 경우 해당 부분의 밸브를 잠근 뒤 연락 주세요.</div></section>
-<section class="section"><div class="hero-cta"><a class="btn btn-call" href="${site.phoneHref}">📞 긴급 전화 ${esc(site.phone)}</a></div></section>`,
-    faqs: [{ q: "야간·주말에도 출동하나요?", a: "지역과 상황에 따라 가능 여부를 확인합니다. 전화로 문의해 주세요." }],
+<section class="section"><div class="hero-cta"><a class="btn btn-call" href="${site.phoneHref}">📞 24시 긴급 전화 ${esc(site.phone)}</a></div></section>`,
+    faqs: [
+      { q: "야간·주말·심야에도 출동하나요?", a: "네, 24시간 연중무휴로 운영합니다. 심야·새벽·주말·공휴일에도 전화 주시면 상담해 드리며, 지역과 현장 상황에 따라 가장 가까운 기사를 배정해 출동합니다." },
+      { q: "급할 때 얼마나 빨리 연락되나요?", a: "전화는 24시간 받습니다. 위치와 증상(역류·누수 등)을 알려주시면 급한 순서대로 우선 안내해 드립니다." },
+    ],
     priority: 0.6,
   });
 
