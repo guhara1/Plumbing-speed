@@ -217,7 +217,7 @@ function faqBlock(faqs) {
   return { html, schema };
 }
 
-// 이미지(시공 사진) 슬롯. 실제 파일 assets/img/NN.jpg 가 있으면 사진이,
+// 이미지(시공 사진) 슬롯. 실제 파일 assets/img/NN.webp 가 있으면 사진이,
 // 없으면 회색 자리(placeholder)가 노출됩니다. n 은 1부터 시작(이미지 번호).
 // scope 를 주면 지역명을 alt 앞에 붙여 지역별 이미지 SEO 를 확보합니다.
 function figure(n, opts = {}) {
@@ -228,7 +228,7 @@ function figure(n, opts = {}) {
   const showCap = opts.caption !== false;
   const capText = opts.caption || im.caption;
   const cap = showCap ? `<figcaption>${esc(capText)}</figcaption>` : "";
-  return `<figure class="figure"><div class="media" data-label="시공 사진 준비 중 (${num})"><img src="/assets/img/${num}.jpg" alt="${esc(alt)}" loading="lazy" decoding="async" width="800" height="500" onerror="this.style.display='none'"></div>${cap}</figure>`;
+  return `<figure class="figure"><div class="media" data-label="시공 사진 준비 중 (${num})"><img src="/assets/img/${num}.webp" alt="${esc(alt)}" loading="lazy" decoding="async" width="800" height="500" onerror="this.style.display='none'"></div>${cap}</figure>`;
 }
 
 // 여러 장을 그리드로. nums: 이미지 번호 배열. scope 로 지역 alt 부여.
